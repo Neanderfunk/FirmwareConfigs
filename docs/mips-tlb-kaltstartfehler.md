@@ -150,8 +150,9 @@ commits after v2023.2.6.
 
 The five patches apply cleanly to v5.15.198, in that order, without fuzz and
 without a reject, and no OpenWrt 23.05 patch touches the same files. They live
-in `experiments/mips-tlb-arm-e/` together with an installer script; see the
-README there for how to turn them into a build.
+in [`experiments/mips-tlb-arm-e/`](https://github.com/Neanderfunk/gluon-patches-hardware/tree/845a95f09282cd0a9d5349b691448d58039a4e94/experiments/mips-tlb-arm-e) of the
+repository gluon-patches-hardware, together with an installer script; see
+the README there for how to turn them into a build.
 
 ### Arm B in full
 
@@ -660,7 +661,8 @@ cpu-probe.o build without warnings. NOT tested on hardware.
 
 ## Result
 
-`patches/kernel/999-mips-tlb-r4k-no-uniquify.patch` takes the call back out and
+[`kernel/999-mips-tlb-r4k-no-uniquify.patch`](https://github.com/Neanderfunk/gluon-patches-hardware/blob/845a95f09282cd0a9d5349b691448d58039a4e94/kernel/999-mips-tlb-r4k-no-uniquify.patch)
+in gluon-patches-hardware takes the call back out and
 restores the behaviour of 5.15.189. Across both affected devices that is
 **0 of 41** cold starts unpatched against **41 of 41** patched. This is what
 ships today, in `26091920sta`.
