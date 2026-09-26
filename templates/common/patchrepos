@@ -9,7 +9,7 @@
 # Eine Aenderung hier (neuer Commit) aendert den Fingerabdruck des golden
 # tree, der naechste Lauf baut ihn also neu.
 
-PATCHREPOS="hardware fixes"
+PATCHREPOS="hardware fixes packages"
 
 PATCHREPO_HARDWARE_REPO=https://github.com/Neanderfunk/gluon-patches-hardware.git
 PATCHREPO_HARDWARE_BRANCH=v2023.2.x
@@ -18,3 +18,7 @@ PATCHREPO_HARDWARE_COMMIT=845a95f09282cd0a9d5349b691448d58039a4e94
 PATCHREPO_FIXES_REPO=https://github.com/Neanderfunk/gluon-patches-fixes.git
 PATCHREPO_FIXES_BRANCH=v2023.2.x
 PATCHREPO_FIXES_COMMIT=0b05233d0d6a69f424c20ae5c25c80f47ca029ed
+
+PATCHREPO_PACKAGES_REPO=https://github.com/Neanderfunk/gluon-patches-packages.git
+PATCHREPO_PACKAGES_BRANCH=v2023.2.x
+PATCHREPO_PACKAGES_COMMIT=81c71e707063804b3f8dbd86d348c72530fc822e

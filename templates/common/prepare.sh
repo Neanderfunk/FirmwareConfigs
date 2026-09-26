@@ -187,28 +187,13 @@ run_patch bugfixes/fix-respondd-rsk.sh          "respondd-Listener auf den Gluon
 run_patch network/interface-role-migration21.sh "Migration 2021: Schnittstellen mit Client-Netz"
 run_patch build/patch-gluon-makefiles.sh     "Gluon-Makefile und Paketliste"
 
-# Uebergang: status-page/ und setup-mode-network/ gehoeren zu Paketen aus
-# Neanderfunk/packages und ziehen in ein Repo der Paketverwaltung um. Bis dahin
-# laufen sie von hier.
-#
-# Reihenfolge beachten: moredetails fuegt direkt hinter der Modellzeile ein,
-# ssid und hwdetails setzen auf diesem Zustand auf.
-run_patch status-page/statuspage-moredetails.sh    "Statusseite: weitere MACs und Gluon-Version"
-run_patch status-page/statuspage-ssid.sh           "Statusseite: SSID, HT-Modus und ssid-changer"
-run_patch status-page/statuspage-hwdetails.sh      "Statusseite: CPU-Typ, Kernzahl und BIOS"
-run_patch status-page/statuspage-ethlinks.sh       "Statusseite: Ethernet-Geschwindigkeit je Port"
-run_patch status-page/statuspage-ssidchanger-zaehler.sh "Statusseite: Zaehler des ssid-changer seit Boot"
-run_patch status-page/statuspage-respondd.sh       "Statusseite: Werte aus neanderfunk-respondd, live"
-run_patch status-page/web-static-version.sh        "Statusseite und Config-Mode: CSS/JS mit Versionsanhang"
-run_patch setup-mode-network/setup-mode-hostnames.sh      "Setup-Mode: gluon.setup und setup.gluon per DNS auf 192.168.1.1"
-run_patch setup-mode-network/setup-mode-captive.sh        "Setup-Mode: Portal-Erkennung der Clients fuehrt auf die Setup-Seite"
-run_patch setup-mode-network/setup-mode-wifi.sh           "Setup-Mode: dnsmasq an br-setup, Portal-Umleitung (fuer neanderfunk-setup-wifi)"
-
 # Seit 27.09.2026 in eigenen Repos (Pin-Datei patchrepos): Geraete, Targets,
 # Geraete-Korrekturen, Kernel und primaere MACs in
 # Neanderfunk/gluon-patches-hardware; lowmem, allgemeine Fehlerbehebungen,
 # Config-Mode-Wizard, Outdoor-Schalter und die Paketpatches fuer Airtime und
-# ffac in Neanderfunk/gluon-patches-fixes.
+# ffac in Neanderfunk/gluon-patches-fixes; Statusseite und Setup-Mode-Netz,
+# die an Neanderfunk-Paketen haengen, in Neanderfunk/gluon-patches-packages
+# (gepflegt von der Paketverwaltung).
 
 # Entfernt am 11.09.2026, weil sie nicht mehr aufgerufen wurden (die
 # Geschichte steht in git):
