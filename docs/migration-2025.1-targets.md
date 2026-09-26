@@ -392,7 +392,7 @@ an der Stelle an, an der er scheitert, statt ihn stillschweigend weiterlaufen zu
 
 ### 4.4 Der MIPS-TLB-Patch — zu pruefen, nicht blind fallenzulassen
 
-`patches/kernel/999-mips-tlb-r4k-no-uniquify.patch` nimmt in 5.15.198 den Aufruf von
+`kernel/999-mips-tlb-r4k-no-uniquify.patch` (Neanderfunk/gluon-patches-hardware) nimmt in 5.15.198 den Aufruf von
 `r4k_tlb_uniquify()` aus `r4k_tlb_configure()` heraus. Ohne ihn bleibt der
 Kernel auf MIPS 74Kc beim **Kaltstart** in `tlb_init()` stehen — Warmstarts und
 sysupgrades ueberstehen die Geraete, der erste Stromausfall nicht. Belegt an
@@ -538,7 +538,7 @@ der bei uns nicht backportierbar war. Danach ist zu prüfen, ob unsere
 Gegenmaßnahmen noch gebraucht werden: der Backlog-Watchdog
 `neanderfunk-mt7915-backlog`, der `wifi_firmware`-Reboot in
 `neanderfunk-hotfix` und die selbst weitergezogene Pufferstaffel in
-`patches/lowmem/limit-wireless-buffers.patch` (Gluon 2025.1 bringt `8f38662f` selbst
+`lowmem/limit-wireless-buffers.patch` in Neanderfunk/gluon-patches-fixes (Gluon 2025.1 bringt `8f38662f` selbst
 mit, aber nur bis 128 MB). Grundlage: `mt7915-analyse.md`.
 
 ## 5. Die Site-Konfiguration

@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-# Wendet die Patches aus patches/ auf den Gluon-Baum an.
+# Wendet die Patches auf den Gluon-Baum an: zuerst die der Patch-Repos aus
+# der Pin-Datei patchrepos (neben dieser Datei), dann die aus patches/ in
+# diesem Repo.
 #
 # Aufgerufen wird die Datei von build.sh (prepare_gluon_tree), je Lauf zweimal
 # und mit dem Gluon-Verzeichnis als Arbeitsverzeichnis. Sie liegt als Kopie in
@@ -73,45 +75,122 @@ run_patch ()
     || abort "patches/$script fehlgeschlagen ($description)."
 }
 
-echo "Patches aus patches/ anwenden, Phase $PHASE ..."
+# --- Patch-Repos --------------------------------------------------------
+#
+# Die Pin-Datei liegt neben prepare.sh (build.sh kopiert beide aus
+# templates/common ins zusammengebaute Site-Verzeichnis). Die Repos liegen
+# neben dem Gluon-Baum unter patch-repos/<name>, ausserhalb eines
+# Worker-Overlays. In pre-update werden sie geholt und auf den gepinnten
+# Commit gesetzt, in post-update nur geprueft: dort braucht es kein Netz.
+
+PIN_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/patchrepos"
+[ -f "$PIN_FILE" ] || abort "Pin-Datei $PIN_FILE fehlt."
+PATCHREPO_ROOT="$(cd "$GLUON_DIR/.." && pwd)/patch-repos"
+
+PATCHREPOS=""
+# shellcheck source=/dev/null
+. "$PIN_FILE"
+
+# patchrepo_pin <name> <REPO|BRANCH|COMMIT>
+patchrepo_pin ()
+{
+  local var
+  var="PATCHREPO_$(printf '%s' "$1" | tr 'a-z-' 'A-Z_')_$2"
+  [ -n "${!var-}" ] || abort "$var fehlt in $PIN_FILE."
+  printf '%s' "${!var}"
+}
+
+# fetch_patchrepo <name>: holen und auf den gepinnten Commit setzen.
+fetch_patchrepo ()
+{
+  local name="$1" repo branch commit dir try
+  repo="$(patchrepo_pin "$name" REPO)"
+  branch="$(patchrepo_pin "$name" BRANCH)"
+  commit="$(patchrepo_pin "$name" COMMIT)"
+  dir="$PATCHREPO_ROOT/$name"
+
+  echo
+  echo "=== Patch-Repo $name: $repo $branch @ $commit"
+
+  if [ ! -d "$dir/.git" ]; then
+    rm -rf -- "$dir"
+    mkdir -p -- "$PATCHREPO_ROOT"
+    git init -q -- "$dir" || abort "git init $dir fehlgeschlagen."
+  fi
+  git -C "$dir" remote remove origin 2>/dev/null || true
+  git -C "$dir" remote add origin "$repo"
+
+  # Drei Versuche mit Pause: ein kurzer Netzaussetzer soll den Lauf nicht
+  # beenden.
+  for try in 1 2 3; do
+    git -C "$dir" fetch -q origin "+refs/heads/$branch:refs/remotes/origin/$branch" && break
+    [ "$try" -lt 3 ] || abort "Patch-Repo $name: fetch von $repo ($branch) fehlgeschlagen."
+    echo "  fetch fehlgeschlagen, neuer Versuch in 30 s ..."
+    sleep 30
+  done
+
+  git -C "$dir" cat-file -e "$commit^{commit}" 2>/dev/null \
+    || abort "Patch-Repo $name: Commit $commit gibt es in $repo nicht."
+  git -C "$dir" merge-base --is-ancestor "$commit" "refs/remotes/origin/$branch" \
+    || abort "Patch-Repo $name: Commit $commit liegt nicht auf $branch."
+  git -C "$dir" checkout -q --force --detach "$commit" \
+    || abort "Patch-Repo $name: checkout $commit fehlgeschlagen."
+  git -C "$dir" clean -q -f -d -x
+}
+
+# check_patchrepo <name>: steht das Repo sauber auf dem gepinnten Commit?
+check_patchrepo ()
+{
+  local name="$1" commit dir head
+  commit="$(patchrepo_pin "$name" COMMIT)"
+  dir="$PATCHREPO_ROOT/$name"
+  head="$(git -C "$dir" rev-parse HEAD 2>/dev/null)" \
+    || abort "Patch-Repo $name fehlt unter $dir - lief pre-update?"
+  [ "$head" = "$commit" ] \
+    || abort "Patch-Repo $name steht auf $head statt auf $commit."
+  [ -z "$(git -C "$dir" status --porcelain)" ] \
+    || abort "Patch-Repo $name hat lokale Aenderungen."
+}
+
+# apply_patchrepo <name>: dessen apply.sh fuer die aktuelle Phase aufrufen.
+apply_patchrepo ()
+{
+  local name="$1"
+  echo
+  echo "=== Patch-Repo $name: apply.sh $PHASE"
+  ( cd "$GLUON_DIR" && "$PATCHREPO_ROOT/$name/apply.sh" "$PHASE" ) \
+    || abort "Patch-Repo $name: apply.sh $PHASE fehlgeschlagen."
+}
+
+[ -n "$PATCHREPOS" ] || abort "PATCHREPOS ist leer in $PIN_FILE."
+
+echo "Patches anwenden (Patch-Repos, dann patches/), Phase $PHASE ..."
 
 if [ "$PHASE" = "pre-update" ]; then
 
-  # Alle vier legen eine Datei im Gluon-Baum ab, die "make update" gleich
-  # darauf auf ein Modul anwendet. Sie muessen deshalb hier stehen und nicht
-  # unten.
-  run_patch build/add-gluon-package-patches.sh  "Paketpatches fuer packages/gluon bereitlegen (opkg-Keys, Airtime-Plausibilitaet)"
-  run_patch devices/add-lantiq-xrx200-devices.sh  "AVM FRITZ!Box 7430 und 3390, mit OpenWrt-Patch"
-  run_patch build/add-ffac-package-patches.sh   "Paketpatch fuer packages/ffac bereitlegen"
-  run_patch bugfixes/tunneldigger-reinit-backoff.sh "tunneldigger: Reinit mit Pause, kein modprobe fuer mesh-vpn (Modulpatch)"
+  for repo in $PATCHREPOS; do fetch_patchrepo "$repo"; done
+  for repo in $PATCHREPOS; do apply_patchrepo "$repo"; done
+
+  # Legt eine Datei im Gluon-Baum ab, die "make update" gleich darauf auf ein
+  # Modul anwendet. Sie muss deshalb hier stehen und nicht unten.
+  run_patch build/add-gluon-package-patches.sh  "Paketpatch fuer packages/gluon bereitlegen (opkg-Keys)"
 
   echo
   echo "Phase pre-update abgeschlossen."
   exit 0
 fi
 
-run_patch bugfixes/fix-respondd-rsk.sh          "respondd-Listener auf den Gluon-2016.x-Wert"
-run_patch device-fixes/mi4apatch.sh                 "Mi Router 4A Gigabit sysupgrade-faehig"
-run_patch devices/add-totolink-x5000r.sh       "Totolink X5000R"
-run_patch devices/add-mercusys-mr90x.sh        "MERCUSYS MR90X"
-run_patch devices/add-dlink-m30.sh             "D-Link AQUILA PRO AI M30 A1"
-run_patch device-fixes/fix-xiaomi-ax6s-bootflags.sh "Xiaomi Redmi AX6S: Boot-Flags bestaetigen (kein Rueckfall auf Stock)"
-run_patch devices/add-nanopi-r2c.sh            "FriendlyElec NanoPi R2C"
-run_patch devices/add-cudy-3000.sh             "Cudy-3000-Serie im Target mediatek-filogic"
-run_patch targets/additionaltargets.sh         "zusaetzliche Targets und Geraete aus OpenWrt"
-run_patch devices/add-cellular.sh              "Mobilfunkgeraet ZTE MF286R"
-run_patch network/interface-role-migration21.sh "Migration 2021: Schnittstellen mit Client-Netz"
-run_patch network/interfaces-patch.sh          "primaere MACs und Schnittstellenzuordnung"
-run_patch build/patch-gluon-makefiles.sh     "Gluon-Makefile und Paketliste"
-run_patch lowmem/limit-wireless-buffers.sh    "WLAN-Puffer nach RAM begrenzen (Backport Gluon 8f38662f)"
-run_patch kernel/revert-mips-tlb-uniquify.sh  "MIPS: r4k_tlb_uniquify() zuruecknehmen (Kaltstart-Haenger 74Kc)"
-run_patch kernel/rtl8221b-skip-mmd30.sh       "Kernel: MMD 30 des RTL8221B beim PHY-Scan auslassen (toter 2,5G-Port bei Boot mit Kabel; Backport OpenWrt 88dcd8c)"
-run_patch kernel/mt7530-phy-disable-eee.sh      "Kernel: EEE am MT7530-PHY aus, MT7621-Switch (Nachbau OpenWrt PR #25058 fuer 5.15)"
-run_patch kernel/ag71xx-rx-ring-no-bug.sh     "ag71xx: kein BUG() bei leerem RX-Ring (RAM-Druck, Archer C25)"
-run_patch lowmem/sysctl-no-watermark-boost-64mb.sh "base-files: kein Watermark-Boost auf 64-MB-Geraeten"
-run_patch bugfixes/sysctl-firmware-no-sysfs-fallback.sh "base-files: kein sysfs-Fallback fuer fehlende Firmware (Boot-Stillstand)"
-run_patch lowmem/sysctl-64m-min-free.sh        "gluon-core: min_free_kbytes 2048 und kleine Fragmentpuffer auf 64-MB-Geraeten (Backport Gluon a505f767+c6ac8914)"
+for repo in $PATCHREPOS; do check_patchrepo "$repo"; done
+for repo in $PATCHREPOS; do apply_patchrepo "$repo"; done
 
+run_patch bugfixes/fix-respondd-rsk.sh          "respondd-Listener auf den Gluon-2016.x-Wert"
+run_patch network/interface-role-migration21.sh "Migration 2021: Schnittstellen mit Client-Netz"
+run_patch build/patch-gluon-makefiles.sh     "Gluon-Makefile und Paketliste"
+
+# Uebergang: status-page/ und setup-mode-network/ gehoeren zu Paketen aus
+# Neanderfunk/packages und ziehen in ein Repo der Paketverwaltung um. Bis dahin
+# laufen sie von hier.
+#
 # Reihenfolge beachten: moredetails fuegt direkt hinter der Modellzeile ein,
 # ssid und hwdetails setzen auf diesem Zustand auf.
 run_patch status-page/statuspage-moredetails.sh    "Statusseite: weitere MACs und Gluon-Version"
@@ -121,16 +200,15 @@ run_patch status-page/statuspage-ethlinks.sh       "Statusseite: Ethernet-Geschw
 run_patch status-page/statuspage-ssidchanger-zaehler.sh "Statusseite: Zaehler des ssid-changer seit Boot"
 run_patch status-page/statuspage-respondd.sh       "Statusseite: Werte aus neanderfunk-respondd, live"
 run_patch status-page/web-static-version.sh        "Statusseite und Config-Mode: CSS/JS mit Versionsanhang"
-run_patch gluon-config-mode/wizard-save-only.sh          "Config-Mode: Wizard mit Speichern ohne Neustart, Warnung beim Verlassen"
-run_patch gluon-config-mode/wizard-save-lock.sh          "Config-Mode: nur ein Speichern & Neustarten gleichzeitig"
 run_patch setup-mode-network/setup-mode-hostnames.sh      "Setup-Mode: gluon.setup und setup.gluon per DNS auf 192.168.1.1"
 run_patch setup-mode-network/setup-mode-captive.sh        "Setup-Mode: Portal-Erkennung der Clients fuehrt auf die Setup-Seite"
 run_patch setup-mode-network/setup-mode-wifi.sh           "Setup-Mode: dnsmasq an br-setup, Portal-Umleitung (fuer neanderfunk-setup-wifi)"
 
-run_patch gluon-config-mode/outdoor-schalter.sh           "Outdoor-Schalter unabhaengig von preserve_channels"
-
-run_patch lowmem/state-check-shell.sh          "gluon-state-check als Shell statt Lua (RAM-Druck auf 64-MB-Geraeten)"
-run_patch lowmem/tunneldigger-watchdog-shell.sh "tunneldigger-watchdog als Shell statt Lua (RAM-Druck auf 64-MB-Geraeten)"
+# Seit 27.09.2026 in eigenen Repos (Pin-Datei patchrepos): Geraete, Targets,
+# Geraete-Korrekturen, Kernel und primaere MACs in
+# Neanderfunk/gluon-patches-hardware; lowmem, allgemeine Fehlerbehebungen,
+# Config-Mode-Wizard, Outdoor-Schalter und die Paketpatches fuer Airtime und
+# ffac in Neanderfunk/gluon-patches-fixes.
 
 # Entfernt am 11.09.2026, weil sie nicht mehr aufgerufen wurden (die
 # Geschichte steht in git):
