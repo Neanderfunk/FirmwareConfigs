@@ -261,7 +261,7 @@ Keiner der beiden Chips ist von openwrt/mt76#1009 betroffen. Die kurze Leine
 bringt dort nichts und kostet einen Null-Data-Poll je untaetiger Station alle
 zehn Sekunden.
 
-Behoben mit `patches/build/ffac-packages.patch`: der Gate prueft jetzt zur Laufzeit
+Behoben mit `package-fixes/ffac-packages.patch` (seit 27.09.2026 in Neanderfunk/gluon-patches-fixes, vorher `patches/build/`): der Gate prueft jetzt zur Laufzeit
 je Radio das Kernelmodul hinter dem Phy — dieselbe Pruefung wie in
 `neanderfunk-mt7915-backlog`, und aus demselben Grund das Modul statt des
 Treibernamens (SoC-integrierter mt7915 meldet sich als `mt798x-wmac`, das
