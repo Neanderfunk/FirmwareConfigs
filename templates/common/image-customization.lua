@@ -396,9 +396,11 @@ end
 -- mt7915: Unter 2023.2 kamen hier ffac-mt7915-maxinactivity und
 -- neanderfunk-mt7915-backlog hinzu (Backlog, openwrt/mt76#1009). Unter 2025.1
 -- gibt es ffac-mt7915-maxinactivity nicht mehr, und der Feed hat
--- neanderfunk-mt7915-backlog entfernt (038debe: der Fix steckt in 2025.1 im
--- Treiber, OpenWrt 24.10 bringt mt76 vom 2025-11-06). Grundlage
--- docs/mt7915-analyse.md.
+-- neanderfunk-mt7915-backlog entfernt. Grund ist Gluons Patch 0012 (PLE-Queues
+-- leeren) auf mt76 2025-11-06; der Power-Save-Strang von Mai/Juni 2026 ist in
+-- 2025.1 nicht enthalten. neanderfunk-hotfix wifi_firmware bleibt. Grundlage
+-- docs/mt7915-analyse.md, Neubewertung im Feed
+-- docs/gluon-2025.1-kompatibilitaet.md (50b249a).
 
 -- EdgeRouter X und X-SFP: Images ja, Manifest nein (adorfer 27.09.2026), bis
 -- zur ERX-Migration nach einem 2025.1-Release. Der Wechsel auf 2025.1 braucht
