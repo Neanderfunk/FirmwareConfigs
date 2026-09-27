@@ -1,6 +1,6 @@
 # patches/ – Neanderfunk-eigene Änderungen an Gluon
 
-*Patches for Gluon v2023.2.x used only by Freifunk Neanderland. Patches that
+*Patches for Gluon v2025.1.x used only by Freifunk Neanderland. Patches that
 are useful to others live in their own repositories, see below.*
 
 ## Wo die Patches liegen
@@ -32,7 +32,6 @@ Die Reihenfolge steht nur in `prepare.sh`.
 | --- | --- | --- |
 | `build/add-gluon-package-patches.sh` | pre-update | Paketpatch für packages/gluon: `/etc/opkg/keys` beim Autoupdater-Upgrade löschen |
 | `bugfixes/fix-respondd-rsk.sh` | post-update | respondd-Listener auf den Gluon-2016.x-Wert; Begründung im Skriptkopf |
-| `network/interface-role-migration21.sh` | post-update | Migration 2021: Schnittstellen mit Client-Netz behalten ihre Rolle |
 | `build/patch-gluon-makefiles.sh` | post-update | Gluon-Makefile: `GLUON_TARGETS` per override |
 
 ## Abhängigkeiten

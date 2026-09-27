@@ -1,4 +1,4 @@
--- images-customization.lua for Freifunk im Neanderland - gluon 2023.2.x
+-- images-customization.lua for Freifunk im Neanderland - gluon 2025.1.x
 
 features {
     'autoupdater',
@@ -8,7 +8,9 @@ features {
     'ebtables-limit-arp',
     'ebtables-source-filter',
     'mesh-batman-adv-15',
-    'mesh-vpn-tunneldigger',
+    -- Tunneldigger ist seit Gluon 2025.1 kein Feature mehr (#3109): das Paket
+    -- ff-mesh-vpn-tunneldigger (community) unten, dazu die Config-Mode-Seite.
+    'config-mode-mesh-vpn',
     'respondd',
     'status-page',
     'web-advanced',
@@ -27,16 +29,15 @@ features {
 --   gluon             Gluon selbst, gluon/package/
 --   gluon-packages    Feed "gluon"        freifunk-gluon/packages
 --   community         Feed "community"    freifunk-gluon/community-packages
---   ffac              Feed "ffac"         ffac/gluon-packages
 --   neanderfunk       Feed "neanderfunk"  Neanderfunk/packages
 --   openwrt           OpenWrt-Basis
 --   openwrt-packages  OpenWrt-Feed "packages"
 --
 -- Vorsicht: der Namensvorsatz sagt nichts ueber den Feed.
--- ffac-autoupdater-wifi-fallback und ffac-update-location-gps liegen in
--- community-packages. Aus dem ffac-Feed kommt bei uns allein
--- ffac-web-private-wan-dhcp.
+-- Die ffac-Pakete liegen unter 2025.1 alle in den community-packages, einen
+-- eigenen ffac-Feed gibt es nicht mehr.
 packages {
+    'ff-mesh-vpn-tunneldigger',           -- community (ersetzt das Feature mesh-vpn-tunneldigger)
     'gluon-ebtables-filter-ra-dhcp',      -- gluon
     'respondd-module-airtime',            -- gluon-packages
     'iwinfo',                             -- openwrt
@@ -184,8 +185,8 @@ end
 
 if device({
         'zte-mf281',
-        'glinet-gl-xe300',
-        'glinet-gl-ap1300',
+        'gl.inet-gl-xe300',
+        'gl.inet-gl-ap1300',
         'zte-mf289f',
         'zte-mf286r',
         'wavlink-ws-wn572hp3-4g',
@@ -195,7 +196,7 @@ if device({
         'web-cellular',
     }
     packages {
-        'ffac-web-private-wan-dhcp',      -- ffac
+        'ffac-web-private-wan-dhcp',      -- community
     }
 end
 
@@ -372,23 +373,21 @@ if target('bcm27xx') then
     packages(pkgs_hid)
 end
 
--- mt7622 ist bei Gluon ein eigenes Board (targets/mediatek-mt7622), kein
--- ramips-Subtarget: target() vergleicht das erste Argument gegen env.BOARD,
--- 'ramips','mt7622' traf also nie.
-if target('ramips', 'mt7621') or target('mediatek', 'mt7622') or target('mediatek', 'filogic') then
-        packages {
-                -- Setzt max_inactivity auf den client_*-Interfaces. Ohne das
-                -- gilt hostapds Vorgabe von 300 s: ein Client, der zum
-                -- Nachbar-AP roamt, bleibt fuenf Minuten in der
-                -- Stationstabelle, und die Hardware puffert weiter Frames fuer
-                -- ihn. Genau das fuellt den Backlog (openwrt/mt76#1009).
-                -- hostapd pollt vor dem Rauswurf (skip_inactivity_poll=0),
-                -- anwesende, aber stille Clients fliegen also nicht raus.
-                'ffac-mt7915-maxinactivity',  -- ffac
-                -- Symptombehandlung dazu: startet WLAN neu, wenn der Backlog
-                -- trotzdem hochlaeuft.
-                'neanderfunk-mt7915-backlog', -- neanderfunk
-        }
+-- mt7915: Unter 2023.2 kamen hier ffac-mt7915-maxinactivity und
+-- neanderfunk-mt7915-backlog hinzu (Backlog, openwrt/mt76#1009). Unter 2025.1
+-- gibt es ffac-mt7915-maxinactivity nicht mehr, und der Feed hat
+-- neanderfunk-mt7915-backlog entfernt (038debe: der Fix steckt in 2025.1 im
+-- Treiber, OpenWrt 24.10 bringt mt76 vom 2025-11-06). Grundlage
+-- docs/mt7915-analyse.md.
+
+-- EdgeRouter X und X-SFP: bis auf Weiteres keine Images (adorfer 27.09.2026).
+-- Der Wechsel auf 2025.1 braucht dort ein neues Flash-Layout
+-- (darkxst/erx-migration), die Migration ruht. Ohne Image steht das Geraet
+-- nicht im Manifest, der Autoupdater eines ERX auf 2023.2 findet also nichts
+-- und laedt nichts; die Knoten bleiben auf 2023.2.6.
+if device({
+    'ubiquiti-edgerouter-x',
+    'ubiquiti-edgerouter-x-sfp',
+}) then
+    disable()
 end
-
-

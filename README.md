@@ -18,12 +18,15 @@ In English: a measurement report on build times and the parallel build mode
 
 ### Voraussetzungen
 
-- Die Abhängigkeiten von Gluon 2023.2 (siehe Gluons „Getting Started“), dazu
+- Die Abhängigkeiten von Gluon 2025.1 (siehe Gluons „Getting Started“), dazu
   `ecdsautils` (signiert die Manifeste), `lua5.1`, `python3` (Collector,
   optional), `rsync` und `tmux` oder `screen`.
-- **Ein Host-Compiler bis GCC 13**, etwa Debian Bookworm. OpenWrt 23.05 baut
-  mit GCC ab 14 nicht; auf einem Host mit neuerem GCC (z. B. Ubuntu 26.04) im
-  Bookworm-Container bauen, derselbe absolute Pfad innen wie außen.
+- **Neu gegenüber 2023.2:** OpenWrt 24.10 übersetzt BPF-Programme und braucht
+  dafür auf dem Host `clang` und `llvm`, außerdem `libelf-dev`, `libssl-dev`,
+  `zlib1g-dev`, `libncurses5-dev`, `python3-dev` und `python3-pyelftools`.
+  Ohne sie bricht der Bau nach über hundert Paketen ab.
+- Dieser Zweig (`v2025.1.x`) pinnt Gluon in `build.conf` (`GLUON_COMMIT`).
+  Für den Zweig `v2023.2.x` gilt: Host-Compiler bis GCC 13.
 - Parallelbetrieb (`WORKERS` > 1) braucht zusätzlich rootless overlayfs, siehe
   `docs/build-sh.md` im ParallelBuildsystem, Kapitel 7.9. Fehlt es, baut
   `build.sh` seriell und sagt das laut.
@@ -35,7 +38,7 @@ Beide Repos nebeneinander:
 
 ```
 git clone https://github.com/Neanderfunk/ParallelBuildsystem
-git clone https://github.com/Neanderfunk/FirmwareConfigs -b v2023.2.x
+git clone https://github.com/Neanderfunk/FirmwareConfigs -b v2025.1.x
 cd FirmwareConfigs
 ```
 
