@@ -1,5 +1,8 @@
 DEADJOE
 build.local.conf
+# Hostspezifische Auswahlen (etwa domains-turnaround.local.conf), zaehlen so
+# nicht als Aenderung in build-info.txt
+*.local.conf
 build-times.csv
 gluon
 secret.key

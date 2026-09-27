@@ -61,6 +61,7 @@ Quelle, etwa ein lokaler Spiegel, geht über `GLUON_REPO` (Umgebung oder
 |---|---|
 | `build.conf` | *wie* gebaut wird: Version, Aufräumen, `WORKERS`, Baureihenfolge |
 | `build.local.conf` | optional, hostspezifisch, nicht im Repo (etwa `WORKERS=6`) |
+| `*.local.conf` | eigene Auswahlen eines Hosts, etwa `domains-turnaround.local.conf`; von Git ignoriert, damit `build-info.txt` den Checkout als sauber meldet |
 | `targets.conf` | welche Hardware (`GLUON_TARGETS`, `-` davor schaltet aus) |
 | `domains.conf` | welche Domains: `SITES_FILE`, `DOMAINS_INCLUDE`/`EXCLUDE` |
 | `sites.*` | die Domains, je Zeile eine, erzeugt aus `templates/` |
