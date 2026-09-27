@@ -678,7 +678,7 @@ nach ueber hundert uebersetzten Paketen an einer Kleinigkeit.
 
 ### 5.4 check_site ist gelaufen — die site.conf passt unveraendert
 
-Nachgetragen am selben Abend. `tests/check-site-gluon2025.sh` fuehrt Gluons
+Nachgetragen am selben Abend. `tests/check-site-gluon2025.sh` (heute im ParallelBuildsystem) fuehrt Gluons
 eigene `check-site.lua` aus einem 2025.1-Baum gegen unsere assemblierte
 `site.conf` aus, ohne dafuer zu bauen: Lua 5.1 genuegt (`site_config.lua`
 braucht `setfenv`), das fehlende `jsonc` aus libubox liegt als reine
