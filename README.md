@@ -93,3 +93,10 @@ Sekunden prüfen, ohne Bau (die semantische Prüfung macht Gluon beim `make`):
     ../ParallelBuildsystem/tests/check-site-conf.sh
 
 `build.sh` ruft sie vor jedem Lauf selbst auf.
+
+## Lizenz
+
+Kleinteilig nach Pfaden, siehe `LICENSE`: Patchdateien unter der Lizenz des
+gepatchten Projekts, die Texte der Oberfläche (`i18n/`, Formulierungen von
+Lutz Wulfestieg) und die Dokumentation unter CC BY-SA 4.0, alles Übrige
+BSD-3-Clause.

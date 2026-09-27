@@ -1,0 +1,88 @@
+Lizenzen in diesem Repository
+=============================
+
+Dieses Repository enthaelt Teile unter verschiedenen Lizenzen. Fuer jede
+Datei gilt der erste passende Eintrag der folgenden Liste.
+
+
+1. Patchdateien: patches/**/*.patch
+-----------------------------------
+
+Jede Patchdatei aendert Dateien eines anderen Projekts und steht unter dessen
+Lizenz: Gluon BSD-2-Clause, OpenWrt und Linux GPL-2.0-only, Pakete aus
+Paketfeeds unter der Lizenz des jeweiligen Pakets.
+
+
+2. Uebersetzungen und Texte der Oberflaeche: templates/*/i18n/*.po
+------------------------------------------------------------------
+
+Die Formulierungen, unter denen Knoten nur in der Region der jeweiligen
+Domain aufgestellt werden sollen, stammen von Lutz Wulfestieg. Er hat sie als
+Vorstand des Neanderfunk-Vereins ausdruecklich zur Aufnahme in die Firmware
+beigesteuert, ausserhalb dieses Git-Repositorys.
+Uebrige Texte und Bearbeitung: adorfer/Neanderfunk und die Mitwirkenden laut
+Git-Geschichte.
+
+Lizenz: Creative Commons Namensnennung - Weitergabe unter gleichen
+Bedingungen 4.0 International (CC BY-SA 4.0),
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.de
+
+Namensnennung: "Lutz Wulfestieg, adorfer/Neanderfunk und Mitwirkende".
+
+
+3. Dokumentation: docs/*.md, README.md, patches/README.md
+--------------------------------------------------------
+
+Copyright (c) 2015-2026, adorfer/Neanderfunk und die Mitwirkenden laut
+Git-Geschichte.
+
+Lizenz: Creative Commons Namensnennung - Weitergabe unter gleichen
+Bedingungen 4.0 International (CC BY-SA 4.0),
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.de
+
+
+4. Schluessel: buildkeys/
+------------------------
+
+Oeffentliche Schluessel sowie der absichtlich oeffentliche Signierschluessel
+"untrustworthy-buildbot" (siehe README, Abschnitt Signaturen). Frei
+verwendbar, ohne Bedingungen.
+
+
+5. Alles andere
+---------------
+
+Konfiguration (*.conf, sites.*, templates/ ausser Punkt 2), Skripte
+(patches/**/*.sh, patches/lib-patch.sh, templates/common/prepare.sh,
+linereplace.sh) und alle uebrigen Dateien:
+
+BSD 3-Clause License
+
+Copyright (c) 2015-2026, adorfer/Neanderfunk and the contributors listed in
+the Git history.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
