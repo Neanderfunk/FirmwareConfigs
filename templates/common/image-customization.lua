@@ -400,14 +400,17 @@ end
 -- Treiber, OpenWrt 24.10 bringt mt76 vom 2025-11-06). Grundlage
 -- docs/mt7915-analyse.md.
 
--- EdgeRouter X und X-SFP: bis auf Weiteres keine Images (adorfer 27.09.2026).
--- Der Wechsel auf 2025.1 braucht dort ein neues Flash-Layout
--- (darkxst/erx-migration), die Migration ruht. Ohne Image steht das Geraet
--- nicht im Manifest, der Autoupdater eines ERX auf 2023.2 findet also nichts
--- und laedt nichts; die Knoten bleiben auf 2023.2.6.
+-- EdgeRouter X und X-SFP: Images ja, Manifest nein (adorfer 27.09.2026), bis
+-- zur ERX-Migration nach einem 2025.1-Release. Der Wechsel auf 2025.1 braucht
+-- dort ein neues Flash-Layout (darkxst/erx-migration) und bringt einen neuen
+-- Compat-Level. Stuende das Image im Manifest, laede ein ERX auf 2023.2 es
+-- stuendlich und lehnte das sysupgrade jedes Mal ab. Ohne Eintrag findet der
+-- Autoupdater nichts; die Knoten bleiben auf 2023.2.6, die Images liegen fuer
+-- den Handbetrieb bereit. disable_manifest() kommt aus gluon-patches-fixes
+-- (build/disable-manifest).
 if device({
     'ubiquiti-edgerouter-x',
     'ubiquiti-edgerouter-x-sfp',
 }) then
-    disable()
+    disable_manifest()
 end
