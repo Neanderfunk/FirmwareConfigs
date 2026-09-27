@@ -203,8 +203,12 @@ das wäre einmal an einem Knoten zu bestätigen.
 2. `8f38662f` backportieren (4.2, erste Variante).
 3. Auf einem filogic-Knoten messen, ob eine weitergezogene Staffel den Backlog
    drückt. Erst dann 4.2, zweite Variante.
-4. Alles Weitere mit 2025.1 — dort kommt mt76 vom November 2025 mit, inklusive
-   des kompletten PS-Strangs aus 2.1.
+4. Alles Weitere mit 2025.1 — dort kommt mt76 vom 2025-11-06 (`eb567bc7`) mit,
+   dazu Gluons eigener Patch 0012 (PLE-Queues leeren). **Der PS-Strang aus 2.1
+   ist darin nicht enthalten**, er ist jünger als dieser mt76-Stand
+   (`9a46d8d2`/`9e613fb0` vom 2026-05-07, `f8b59ca3` vom 2026-06-23).
+   Korrigiert am 27.09.2026 nach der Neubewertung der Paketverwaltung; vorher
+   stand hier, der Strang komme mit 2025.1.
 
 ## 6. Quellen
 

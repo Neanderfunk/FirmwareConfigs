@@ -532,9 +532,10 @@ Der Feldabgleich in Kapitel 0 hat den Pflichtteil klein gemacht.
 Die 4/32-Sackgasse taucht hier bewusst nicht auf — siehe **Umfang**.
 
 **Beim Umstieg neu zu bewerten: die mt7915-Lage.** 2025.1 bringt OpenWrt 24.10
-und damit mt76 vom 2025-11-06 statt vom 2024-04-03 — 19 Monate Treiberarbeit,
-darunter der komplette Power-Save-Strang (`9a46d8d2`, `9e613fb0`, `f8b59ca3`),
-der bei uns nicht backportierbar war. Danach ist zu prüfen, ob unsere
+und damit mt76 vom 2025-11-06 (`eb567bc7`) statt vom 2024-04-03 — 19 Monate
+Treiberarbeit, dazu Gluons Patch 0012 (PLE-Queues leeren). Der Power-Save-Strang
+(`9a46d8d2`, `9e613fb0`, `f8b59ca3`) ist **nicht** dabei, er ist jünger als dieser
+Stand (Mai/Juni 2026; korrigiert 27.09.2026). Danach ist zu prüfen, ob unsere
 Gegenmaßnahmen noch gebraucht werden: der Backlog-Watchdog
 `neanderfunk-mt7915-backlog`, der `wifi_firmware`-Reboot in
 `neanderfunk-hotfix` und die selbst weitergezogene Pufferstaffel in
