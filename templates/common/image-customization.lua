@@ -170,17 +170,37 @@ if lowmem_64m then
     }
 end
 
+-- Geraete, deren Rootfs unter 2025.1 nicht mehr in die Flash-Partition passt.
+-- Sie verzichten nur auf Komfort- und Backend-Funktionen (tls, sftp, sqm);
+-- WLAN bleibt voll (wpa3, usteer). Gemessen am ersten Testbau 27.09.2026
+-- (xz, wie im squashfs): sqm 146516 Byte (davon tc-tiny 110300), tls 108652
+-- (ca-bundle 103552), sftp 46708, zusammen 301876.
+-- Archer C6 v2: Rootfs 5390716 Byte, safeloader-Grenze 5215232 (factory),
+-- fehlten 175484; danach rund 126 kB Luft. Archer C7 v4: 5207672 Byte, nur
+-- 7560 unter der Grenze. Wird es wieder eng: '-opkg' waere der naechste
+-- Kandidat (adorfer 27.09.2026).
+local lowflash = device({
+    'tp-link-archer-c6-v2-eu-ru-jp',   -- ath79, safeloader
+    'tp-link-archer-c7-v4',            -- ath79, safeloader
+})
+
 if not device_class('tiny') and not lowmem_dualradio then
     features {
-        'tls',
         'wireless-encryption-wpa3',
         'web-cellular',
-        'mesh-vpn-sqm',
     }
     packages {
-        'openssh-sftp-server',
         'ffda-gluon-usteer',              -- community
     }
+    if not lowflash then
+        features {
+            'tls',
+            'mesh-vpn-sqm',
+        }
+        packages {
+            'openssh-sftp-server',
+        }
+    end
 end
 
 if device({
