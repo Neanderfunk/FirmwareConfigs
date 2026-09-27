@@ -690,8 +690,8 @@ image from run `26092705bro` (Gluon v2023.2.x `670b51b`, OpenWrt `33063b4`,
 kernel 5.15.211), without any TLB patch of ours: the arm B patch is gone
 since gluon-patches-hardware `1e58aaa`. The node booted. That is a single
 cold start, not a series. It is enough here because the unpatched failure
-rate on this device was 100 % (0 of 41 above) and the fix now comes from
-upstream. It closes the topic for us.
+rate on this device was 100 % (0 of 20 above; 0 of 41 across both affected
+devices) and the fix now comes from upstream. It closes the topic for us.
 
 From Gluon 2025.1.1 onwards the patch can go entirely, since that runs 6.6.144,
 measured above at 21 of 21. Not on v2025.1 itself, which carries 6.6.119.
