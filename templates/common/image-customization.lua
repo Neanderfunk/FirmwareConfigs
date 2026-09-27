@@ -184,8 +184,8 @@ end
 
 if device({
         'zte-mf281',
-        'glinet-gl-xe300',
-        'glinet-gl-ap1300',
+        'gl.inet-gl-xe300',
+        'gl.inet-gl-ap1300',
         'zte-mf289f',
         'zte-mf286r',
         'wavlink-ws-wn572hp3-4g',
