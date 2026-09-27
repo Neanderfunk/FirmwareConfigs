@@ -402,17 +402,27 @@ end
 -- docs/mt7915-analyse.md, Neubewertung im Feed
 -- docs/gluon-2025.1-kompatibilitaet.md (50b249a).
 
--- EdgeRouter X und X-SFP: Images ja, Manifest nein (adorfer 27.09.2026), bis
--- zur ERX-Migration nach einem 2025.1-Release. Der Wechsel auf 2025.1 braucht
--- dort ein neues Flash-Layout (darkxst/erx-migration) und bringt einen neuen
--- Compat-Level. Stuende das Image im Manifest, laede ein ERX auf 2023.2 es
--- stuendlich und lehnte das sysupgrade jedes Mal ab. Ohne Eintrag findet der
+-- Images ja, Manifest nein (adorfer 27.09.2026): Geraete, deren Compat-Level
+-- mit OpenWrt 24.10 einen Major-Sprung macht. sysupgrade lehnt das ab (nur
+-- Minor-Spruenge uebergeht der Autoupdater mit --ignore-minor-compat-version).
+-- Stuende das Image im Manifest, laede ein Knoten auf 2023.2 es stuendlich
+-- und lehnte das sysupgrade jedes Mal ab. Ohne Eintrag findet der
 -- Autoupdater nichts; die Knoten bleiben auf 2023.2.6, die Images liegen fuer
 -- den Handbetrieb bereit. disable_manifest() kommt aus gluon-patches-fixes
 -- (build/disable-manifest).
+--
+-- EdgeRouter X/X-SFP (1.1 -> 2.0): neues Flash-Layout (darkxst/erx-migration),
+-- bis zur ERX-Migration nach einem 2025.1-Release.
+-- Xiaomi Redmi AX6S/AX3200 (1.0 -> 2.0): neues Flash-Layout, Neuinstallation
+-- ueber factory.bin; steht in Gluons Release Notes 2025.1 neben dem ERX.
+-- Linksys E8450 UBI (1.0 -> 2.0).
+-- Grundlage: Vergleich DEVICE_COMPAT_VERSION aller Geraete zwischen dem
+-- OpenWrt von Gluon v2023.2.6 und v2025.1.x 0ad3ad5 (27.09.2026).
 if device({
     'ubiquiti-edgerouter-x',
     'ubiquiti-edgerouter-x-sfp',
+    'xiaomi-redmi-router-ax6s',
+    'linksys-e8450-ubi',
 }) then
     disable_manifest()
 end
