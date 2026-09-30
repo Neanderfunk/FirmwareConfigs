@@ -196,9 +196,19 @@ local lowflash = device({
 if not device_class('tiny') and not lowmem_dualradio then
     features {
         'tls',
-        'wireless-encryption-wpa3',
         'web-cellular',
     }
+    -- wpa3 nur mit genug RAM (adorfer 01.10.2026): ohne das Feature richtet
+    -- Gluon kein OWE-BSS ein (device_supports_mfp), und das zweite BSS je
+    -- Radio kostet auf 64-MB-Geraeten RAM, den sie nicht haben. Ohne wpa3
+    -- kommt hostapd-mini statt wpad-mbedtls, das spart zusaetzlich. Folge:
+    -- kein WPA3 fuers private WLAN auf lowmem_singleradio; unter 2023.2
+    -- hatten sie es noch.
+    if not lowmem_singleradio then
+        features {
+            'wireless-encryption-wpa3',
+        }
+    end
     packages {
         'openssh-sftp-server',
         'ffda-gluon-usteer',              -- community
