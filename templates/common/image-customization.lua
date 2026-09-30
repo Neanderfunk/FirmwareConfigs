@@ -64,6 +64,7 @@ packages {
     'neanderfunk-node-whisperer',         -- neanderfunk (Fork von ffda-node-whisperer, Konflikt deklariert)
     'neanderfunk-ap-timer',               -- neanderfunk (ff-ap-timer + ff-web-ap-timer, Konflikt deklariert)
     'neanderfunk-respondd',               -- neanderfunk (respondd: Hardware, Radios, Offline-SSID, Ethernet; C)
+    'neanderfunk-status-page',            -- neanderfunk (Uebersetzungen der Neanderfunk-Zeilen der Statusseite; gluon-patches-packages statuspage-i18n)
     -- Config-Mode auf einer Seite, neues Theme. Das Theme-Paket liefert wie
     -- gluon-config-mode-theme view/theme/layout.html (PROVIDES), deshalb muss
     -- Gluons Theme raus, sonst bricht opkg den Image-Bau ab. Zurueck zum
