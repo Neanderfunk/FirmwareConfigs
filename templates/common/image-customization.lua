@@ -378,6 +378,7 @@ if device({
     'cudy-tr3000-v1',
     'cudy-tr3000-256mb-v1',
     'cudy-wr3000h-v1',
+    'cudy-wr3000p-v1',
     'cudy-m3000-v1',
 }) then
     packages {'ethtool'}                 -- openwrt
