@@ -33,6 +33,16 @@ set -o pipefail
 # Patchdateien auch nach einem "cd openwrt" noch finden.
 PATCH_DIR="$( cd "$( dirname "${BASH_SOURCE[1]}" )" && pwd )"
 
+# Strenge fuer alle patch-Aufrufe: kein Fuzz, Leerzeichen zaehlen.
+#
+# Mit dem Standard-Fuzz 2 und --ignore-whitespace griffen Patches auch dann
+# noch, wenn ihr Kontext upstream laengst anders aussah. So legten die
+# Target-Patches unter 2025.1 still Geraete ein zweites Mal an, die Gluon
+# inzwischen selbst fuehrt (bis gluon-patches-hardware eb6c58f). Ein Patch,
+# der nicht mehr exakt passt, soll abbrechen und neu erzeugt werden.
+# Versatz (offset) bleibt erlaubt: er verschiebt nur die Zeilennummern.
+PATCH_STRICT=(--fuzz=0)
+
 patch_abort ()
 {
   echo "  FEHLER: $*" >&2
@@ -135,7 +145,7 @@ do_patch ()
   # fragen und den Build haengen zu lassen.
   # --no-backup-if-mismatch: ohne das legt patch bei jedem Versatz eine
   # .orig-Kopie neben der Zieldatei an. Siehe remove_patch_leftovers.
-  patch -p1 -f --ignore-whitespace --no-backup-if-mismatch <"$patch_file" \
+  patch -p1 -f "${PATCH_STRICT[@]}" --no-backup-if-mismatch <"$patch_file" \
     || patch_abort "$patch_file liess sich nicht anwenden."
   echo "  $patch_file: angewendet."
 }
@@ -173,9 +183,9 @@ apply_patch ()
   # Merkmal, das es im unveraenderten Baum ohnehin schon gibt, den Patch
   # dauerhaft stillschweigend ueberspringen. Genau das ist mit
   # targets-ath79-generic.patch passiert.
-  if patch -R -p1 -s -f --dry-run --ignore-whitespace <"$patch_file" >/dev/null 2>&1; then
+  if patch -R -p1 -s -f --dry-run "${PATCH_STRICT[@]}" <"$patch_file" >/dev/null 2>&1; then
     echo "  $patch_file: bereits angewendet."
-  elif patch -p1 -s -f --dry-run --ignore-whitespace <"$patch_file" >/dev/null 2>&1; then
+  elif patch -p1 -s -f --dry-run "${PATCH_STRICT[@]}" <"$patch_file" >/dev/null 2>&1; then
     do_patch "$patch_file"
   elif created_files_present "$patch_file"; then
     # Der Patch legt Dateien an, die schon im Baum liegen - in einer anderen
