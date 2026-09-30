@@ -184,7 +184,10 @@ end
 -- geschaetzt ~580-640 KB Overlay. sqm wieder rein erst, wenn Test E der
 -- Abnahme ~450 KB Overlay im Betrieb bestaetigt (adorfer 30.09.2026: Klasse
 -- behalten, Einschraenkungen nur so weit noetig).
--- Naechster Kandidat bei Engpass: '-opkg' (~47 KB).
+-- Reihenfolge bei Engpass (adorfer 30.09.2026): zuerst Wartungskomfort,
+-- zuletzt, was den Nutzenden zugute kommt. Also streichen in dieser Folge:
+-- sqm (~146 KB), sftp (~47 KB), tls (~109 KB), '-opkg' (~47 KB), und erst
+-- danach usteer (~25 KB) oder wpa3 (damit auch OWE).
 local lowflash = device({
     'tp-link-archer-c6-v2-eu-ru-jp',   -- ath79, safeloader
     'tp-link-archer-c7-v4',            -- ath79, safeloader
