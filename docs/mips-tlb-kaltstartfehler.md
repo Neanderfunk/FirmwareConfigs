@@ -1,6 +1,11 @@
 # MIPS TLB: cold start failure on kernels 5.15.190 to 5.15.203
 
-Findings, measurements and the possible fixes. Last updated 2026-09-24.
+Findings, measurements and the possible fixes. Last updated 2026-09-30.
+
+**Status: closed for Neanderfunk (30 September 2026).** Fixed upstream in
+5.15.209; Gluon v2023.2.x carries 5.15.211 since 22 September 2026, and
+Gluon 2025.1.1 and later run 6.6.144, measured below at 21 of 21. Our own
+patch is gone since gluon-patches-hardware `1e58aaa`. Nothing left to do.
 
 ## The bug
 
