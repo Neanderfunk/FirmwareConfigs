@@ -171,15 +171,20 @@ if lowmem_64m then
     }
 end
 
--- Geraete, deren Rootfs unter 2025.1 nicht mehr in die Flash-Partition passt.
--- Sie verzichten nur auf Komfort- und Backend-Funktionen (tls, sftp, sqm);
--- WLAN bleibt voll (wpa3, usteer). Gemessen am ersten Testbau 27.09.2026
--- (xz, wie im squashfs): sqm 146516 Byte (davon tc-tiny 110300), tls 108652
--- (ca-bundle 103552), sftp 46708, zusammen 301876.
--- Archer C6 v2: Rootfs 5390716 Byte, safeloader-Grenze 5215232 (factory),
--- fehlten 175484; danach rund 126 kB Luft. Archer C7 v4: 5207672 Byte, nur
--- 7560 unter der Grenze. Wird es wieder eng: '-opkg' waere der naechste
--- Kandidat (adorfer 27.09.2026).
+-- lowflash: Geraete mit knappem Flash. Zwei Grenzen zaehlen:
+-- 1. Factory-Partition (TP-Link safeloader): Archer C6 v2 hatte 5390716 Byte
+--    Rootfs bei 5215232 Grenze, kein Image. C7 v4 lag 7560 Byte darunter.
+-- 2. Das beschreibbare jffs2-Overlay (Rest der Firmware-Partition): jffs2
+--    haelt 192 KB Schreibreserve, Gluon belegt ~96 KB. build.sh warnt unter
+--    OVERLAY_WARN_KB (448 KB, check_overlay_headroom).
+-- Seit dnsmasq-full ohne DNSSEC (gluon-patches-fixes dnsmasq-no-dnssec, ~480
+-- KB squashfs weniger) passt wieder mehr: C6 v2 Overlay 768 KB mit allen
+-- Kuerzungen (26093016bro). Deshalb nur noch sqm weg (tc-tiny, cake, ifb,
+-- sqm-scripts, ~146 KB); tls (~109 KB) und sftp (~47 KB) sind zurueck,
+-- geschaetzt ~580-640 KB Overlay. sqm wieder rein erst, wenn Test E der
+-- Abnahme ~450 KB Overlay im Betrieb bestaetigt (adorfer 30.09.2026: Klasse
+-- behalten, Einschraenkungen nur so weit noetig).
+-- Naechster Kandidat bei Engpass: '-opkg' (~47 KB).
 local lowflash = device({
     'tp-link-archer-c6-v2-eu-ru-jp',   -- ath79, safeloader
     'tp-link-archer-c7-v4',            -- ath79, safeloader
@@ -187,19 +192,17 @@ local lowflash = device({
 
 if not device_class('tiny') and not lowmem_dualradio then
     features {
+        'tls',
         'wireless-encryption-wpa3',
         'web-cellular',
     }
     packages {
+        'openssh-sftp-server',
         'ffda-gluon-usteer',              -- community
     }
     if not lowflash then
         features {
-            'tls',
             'mesh-vpn-sqm',
-        }
-        packages {
-            'openssh-sftp-server',
         }
     end
 end
