@@ -106,7 +106,6 @@ local lowmem_dualradio = device({
     'avm-fritz-wlan-repeater-300e',    -- 2x ath9k
     'openmesh-om5p',                   -- 2x ath9k
     'tp-link-cpe510-v2',               -- 2x ath9k
-    'ubiquiti-nanobeam-m5-xw',         -- 2x ath9k
     'netgear-r6120',                   -- mt7603 + mt76x2 (ramips-mt76x8, 16 MB Flash)
     'tp-link-archer-c50-v3',           -- mt7603 + mt76x2 (ramips-mt76x8)
     'cudy-wr1000',                     -- mt7603 + mt76x2 (ramips-mt76x8)
@@ -148,6 +147,7 @@ local lowmem_singleradio = device({
     'tp-link-tl-wr1043nd-v4',
     'tp-link-wbs210-v1',
     'tp-link-wbs210-v2',
+    'ubiquiti-nanostation-loco-m-xw',  -- 1x ath9k; deckt den Alias NanoBeam M5 XW mit ab
     'ubiquiti-unifi-ap-outdoor+',
 })
 
@@ -168,6 +168,10 @@ if lowmem_64m then
         -- 16.09.2026): Haertung gegen Speicher, auf genau den Geraeten, die
         -- sonst ins Thrashing laufen oder taub werden.
         '-procd-ujail',                -- openwrt
+
+        -- node-whisperer raus (adorfer 01.10.2026): am TL-WR1043ND v2 1,5 MB
+        -- RSS. usteer ist unten schon fuer alle 64-MB-Geraete ausgenommen.
+        '-neanderfunk-node-whisperer', -- neanderfunk
     }
 end
 
@@ -204,14 +208,18 @@ if not device_class('tiny') and not lowmem_dualradio then
     -- kommt hostapd-mini statt wpad-mbedtls, das spart zusaetzlich. Folge:
     -- kein WPA3 fuers private WLAN auf lowmem_singleradio; unter 2023.2
     -- hatten sie es noch.
+    -- usteer ebenso nur mit genug RAM (adorfer 01.10.2026): usteerd am
+    -- TL-WR1043ND v2 1,3 MB RSS.
     if not lowmem_singleradio then
         features {
             'wireless-encryption-wpa3',
         }
+        packages {
+            'ffda-gluon-usteer',          -- community
+        }
     end
     packages {
         'openssh-sftp-server',
-        'ffda-gluon-usteer',              -- community
     }
     if not lowflash then
         features {
