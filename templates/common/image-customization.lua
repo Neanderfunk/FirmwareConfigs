@@ -296,7 +296,18 @@ pkgs_pci = {
     'kmod-bnx2', -- Broadcom NetExtreme BCM5706/5708/5709/5716
 }
 
-include_usb = true
+-- USB nur auf Geraeten mit USB-Port (adorfer 01.10.2026). Frueher stand hier
+-- "include_usb = true" mit Ausnahmelisten (Muster aus ffac/Eulenfunk); damit
+-- bekamen mt7621, filogic, ipq40xx & Co. USB-Treiber und die
+-- Config-Mode-Seite fuer USB-WAN auch ohne Port (Mi Router 4A, WR3000, M60,
+-- NWA50AX ...). Die Liste usb-geraete.lua erzeugt scripts/usb-geraete.py aus
+-- OpenWrt (Profilpakete und Device-Tree); nach einem Sprung des OpenWrt-Pins
+-- oder neuen Geraeten neu erzeugen. x86 und armsr (auch VMs), bcm27xx,
+-- rockchip, mvebu, sunxi und kirkwood haben den USB-Host im Kernel und ihren
+-- Device-Tree nur im Kernel; dort entscheidet das Target, nicht die Liste.
+include_usb = target('x86') or target('armsr') or target('bcm27xx')
+    or target('rockchip') or target('mvebu') or target('sunxi')
+    or target('kirkwood') or include('usb-geraete.lua')
 
 -- rtl838x has no USB support as of Gluon v2023.2
 if target('realtek', 'rtl838x') or target('ramips', 'mt7620') then
@@ -342,18 +353,6 @@ if device({
     'gl.inet-microuter-n300',
     'netgear-r6120',
     'ravpower-rp-wd009'
-}) then
-    include_usb = false
-end
-
--- devices without usb ports
-if device({
-    'ubiquiti-unifi-6-lr-v1',
-    'netgear-ex6150',
-    'netgear-ex3700',
-    'ubiquiti-edgerouter-x',
-    'ubiquiti-edgerouter-x-sfp',
-    'zyxel-nwa55axe',
 }) then
     include_usb = false
 end
