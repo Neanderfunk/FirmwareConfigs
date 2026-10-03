@@ -188,6 +188,58 @@ run_patch bugfixes/fix-respondd-rsk.sh          "respondd-Listener auf den Gluon
 # 2021-Migration selbst entfernt; ein 2021er Knoten geht ueber 2023.2.
 run_patch build/patch-gluon-makefiles.sh     "Gluon-Makefile und Paketliste"
 
+# --- USB-Geraeteliste ---------------------------------------------------
+#
+# usb-geraete.lua (eingebunden von image-customization.lua) haengt an drei
+# Staenden: Gluon-Commit, OpenWrt-Pin und gluon-patches-hardware (neue
+# Geraete ohne OpenWrt-Sprung). Zeile 2 der Liste traegt sie als Stempel.
+# Passt er nicht zum Bau, wird die Liste hier aus dem fertig gepatchten Baum
+# neu erzeugt (scripts/usb-geraete.py, etwa eine Minute) und ersetzt die
+# Fassung im Site-Verzeichnis; sie landet mit der Site im Image-Verzeichnis.
+# Die Fassung in FirmwareConfigs nachzuziehen bleibt ein eigener Commit, damit
+# man im Diff sieht, welche Geraete USB gewinnen oder verlieren. Neu erzeugte
+# Listen liegen je Stempel im Cache neben dem Gluon-Baum, damit sie nicht in
+# jeder Domain erneut entstehen.
+usb_list_refresh ()
+{
+  local site_dir list want have cache tmp openwrt_pin
+  site_dir="$(dirname "$PIN_FILE")"
+  list="$site_dir/usb-geraete.lua"
+  [ -f "$list" ] || abort "usb-geraete.lua fehlt in $site_dir."
+
+  openwrt_pin="$(sed -n 's/^OPENWRT_COMMIT=//p' "$GLUON_DIR/modules" | cut -c1-12)"
+  want="-- Stand: gluon=$(git -C "$GLUON_DIR" rev-parse --short=12 HEAD) openwrt=$openwrt_pin hardware=$(patchrepo_pin hardware COMMIT | cut -c1-12)"
+  have="$(sed -n 2p "$list")"
+
+  echo
+  echo "=== USB-Geraeteliste"
+  if [ "$have" = "$want" ]; then
+    echo "  passt zum Bau: ${want#-- Stand: }"
+    return 0
+  fi
+  echo "  Liste: ${have#-- }"
+  echo "  Bau:   ${want#-- }"
+
+  cache="$(cd "$GLUON_DIR/.." && pwd)/usb-geraete-cache/$(printf '%s' "$want" | md5sum | cut -c1-16).lua"
+  if [ ! -f "$cache" ]; then
+    mkdir -p -- "$(dirname "$cache")"
+    tmp="$cache.tmp.$$"
+    "$GLUON_DIR/../scripts/usb-geraete.py" "$GLUON_DIR" "$(patchrepo_pin hardware COMMIT)" > "$tmp" \
+      || { rm -f -- "$tmp"; abort "scripts/usb-geraete.py fehlgeschlagen."; }
+    [ "$(sed -n 2p "$tmp")" = "$want" ] \
+      || { rm -f -- "$tmp"; abort "Neu erzeugte USB-Liste traegt einen anderen Stempel als der Bau."; }
+    mv -f -- "$tmp" "$cache"
+    echo "  neu erzeugt: $cache"
+  else
+    echo "  aus dem Cache: $cache"
+  fi
+  cp -- "$cache" "$list"
+  echo "  ACHTUNG: templates/common/usb-geraete.lua in FirmwareConfigs ist veraltet."
+  echo "  Unterschied zur neuen Liste (die Images nutzen die neue):"
+  diff -u "$GLUON_DIR/../templates/common/usb-geraete.lua" "$list" | sed -n '3,$p' | grep -E "^[-+] " | sed 's/^/    /' || true
+}
+usb_list_refresh
+
 # Seit 27.09.2026 in eigenen Repos (Pin-Datei patchrepos): Geraete, Targets,
 # Geraete-Korrekturen, Kernel und primaere MACs in
 # Neanderfunk/gluon-patches-hardware; lowmem, allgemeine Fehlerbehebungen,

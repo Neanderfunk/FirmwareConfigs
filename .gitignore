@@ -24,3 +24,6 @@ prepared
 .overlays/
 metrics/
 patch-repos/
+
+# Cache der beim Bau neu erzeugten USB-Geraetelisten (prepare.sh usb_list_refresh)
+/usb-geraete-cache/

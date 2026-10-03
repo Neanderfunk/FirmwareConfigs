@@ -309,9 +309,10 @@ pkgs_pci = {
 -- bekamen mt7621, filogic, ipq40xx & Co. USB-Treiber und die
 -- Config-Mode-Seite fuer USB-WAN auch ohne Port (Mi Router 4A, WR3000, M60,
 -- NWA50AX ...). Die Liste usb-geraete.lua erzeugt scripts/usb-geraete.py aus
--- OpenWrt (Profilpakete und Device-Tree); nach einem Sprung des OpenWrt-Pins
--- oder neuen Geraeten neu erzeugen, sonst fehlt ein neues Geraet mit Port in
--- der Liste und bekommt kein USB (Stand steht in Zeile 2 der Liste). x86 und armsr (auch VMs), bcm27xx,
+-- OpenWrt (Profilpakete und Device-Tree). Zeile 2 traegt den Stand (Gluon,
+-- OpenWrt-Pin, gluon-patches-hardware); prepare.sh vergleicht ihn bei jedem
+-- Bau und erzeugt die Liste neu, wenn er nicht passt. Meldet der Bau das, die
+-- Fassung hier nachziehen (Diff zeigt, wer USB gewinnt oder verliert). x86 und armsr (auch VMs), bcm27xx,
 -- rockchip, mvebu, sunxi und kirkwood haben den USB-Host im Kernel und ihren
 -- Device-Tree nur im Kernel; dort entscheidet das Target, nicht die Liste.
 include_usb = target('x86') or target('armsr') or target('bcm27xx')

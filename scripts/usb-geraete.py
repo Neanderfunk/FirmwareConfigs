@@ -4,7 +4,13 @@
 Aufruf mit einem Gluon-Baum, in dem "make update" und alle Patches gelaufen
 sind (sonst fehlen unsere zusaetzlichen Geraete):
 
-    scripts/usb-geraete.py <gluon-baum> > templates/common/usb-geraete.lua
+    scripts/usb-geraete.py <gluon-baum> <hardware-pin> > templates/common/usb-geraete.lua
+
+<hardware-pin> ist der Commit von gluon-patches-hardware, mit dem der Baum
+gepatcht ist (dort kommen neue Geraete ohne OpenWrt-Sprung herein). Zeile 2
+der Ausgabe ist der Stempel "-- Stand: gluon=... openwrt=... hardware=...";
+prepare.sh vergleicht ihn bei jedem Bau mit den gebauten Staenden und erzeugt
+die Liste neu, wenn er nicht passt.
 
 Quelle ist OpenWrts eigene Auswertung der Geraeteprofile
 (openwrt/tmp/.targetinfo, wird bei Bedarf per "make prepare-tmpinfo"
@@ -116,14 +122,17 @@ def git_head(path):
 
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         sys.exit(__doc__)
     gluon = sys.argv[1]
+    hardware = sys.argv[2][:12]
     openwrt = os.path.join(gluon, 'openwrt')
     info = os.path.join(openwrt, 'tmp', '.targetinfo')
-    if not os.path.exists(info):
-        subprocess.run(['make', '-C', openwrt, 'prepare-tmpinfo'], check=True,
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # Immer aufrufen: make baut .targetinfo nur neu, wenn sich Profile oder
+    # Makefiles geaendert haben; eine alte Datei aus einem frueheren Lauf
+    # zaehlt damit nie.
+    subprocess.run(['make', '-C', openwrt, 'prepare-tmpinfo'], check=True,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     # Target "t/sub" -> (Standardpakete, {Profil: Paketliste})
     targets = {}
@@ -197,7 +206,7 @@ def main():
     for line in open(os.path.join(gluon, 'modules'), encoding='utf-8'):
         if line.startswith('OPENWRT_COMMIT='):
             pin = line.split('=', 1)[1].strip()[:12]
-    print(f'-- Gluon {git_head(gluon)}, OpenWrt-Pin {pin} samt Gluon- und eigenen Patches.')
+    print(f'-- Stand: gluon={git_head(gluon)} openwrt={pin} hardware={hardware}')
     print('-- Gluon-Geraete mit USB-Port: OpenWrt-Profil bringt einen USB-Host-Treiber')
     print('-- mit UND der Device-Tree schaltet einen USB-Knoten ein.')
     print('-- Eingebunden von image-customization.lua per include().')
