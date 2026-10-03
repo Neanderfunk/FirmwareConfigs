@@ -1,5 +1,5 @@
 -- ERZEUGT von scripts/usb-geraete.py, nicht von Hand aendern.
--- Stand: gluon=0ad3ad5b09b3 openwrt=a1ea57bd050c hardware=42bae57086af
+-- Stand: gluon=0ad3ad5b09b3 openwrt=a1ea57bd050c hardware=11facc816a86
 -- Gluon-Geraete mit USB-Port: OpenWrt-Profil bringt einen USB-Host-Treiber
 -- mit UND der Device-Tree schaltet einen USB-Knoten ein.
 -- Eingebunden von image-customization.lua per include().

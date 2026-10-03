@@ -234,9 +234,16 @@ usb_list_refresh ()
     echo "  aus dem Cache: $cache"
   fi
   cp -- "$cache" "$list"
-  echo "  ACHTUNG: templates/common/usb-geraete.lua in FirmwareConfigs ist veraltet."
-  echo "  Unterschied zur neuen Liste (die Images nutzen die neue):"
-  diff -u "$GLUON_DIR/../templates/common/usb-geraete.lua" "$list" | sed -n '3,$p' | grep -E "^[-+] " | sed 's/^/    /' || true
+  local unterschied
+  unterschied="$(diff -u "$GLUON_DIR/../templates/common/usb-geraete.lua" "$list" | sed -n '3,$p' | grep -E "^[-+] " || true)"
+  if [ -z "$unterschied" ]; then
+    echo "  Geraete unveraendert, nur der Stempel ist neu; templates/common/usb-geraete.lua"
+    echo "  in FirmwareConfigs bei Gelegenheit nachziehen."
+  else
+    echo "  ACHTUNG: templates/common/usb-geraete.lua in FirmwareConfigs ist veraltet."
+    echo "  Unterschied zur neuen Liste (die Images nutzen die neue):"
+    printf '%s\n' "$unterschied" | sed 's/^/    /'
+  fi
 }
 usb_list_refresh
 
