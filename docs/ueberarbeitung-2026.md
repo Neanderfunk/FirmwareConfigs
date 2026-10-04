@@ -247,3 +247,5 @@ refault_file, forks und zram; damit lässt sich der RAM-Druck aller
 Sackgasse-Knoten über Karte/Kollektor beobachten. Ausgangswerte am Testknoten
 (24111111sta): MemAvailable ~8,6 MB, zram 8 MB mit 68 KB Daten,
 refault_file 20.
+
+Feed danach `db39f84` (04.10.2026): gluon-banner repariert (help, switch0 ausführbar, Konfliktwarnung, Radio-Variable, nodeinfo; uci show nur einmal, Login 2,0 -> 1,5 s).
