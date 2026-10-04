@@ -12,7 +12,7 @@ PATCHREPOS="fixes packages"
 
 PATCHREPO_FIXES_REPO=https://github.com/Neanderfunk/gluon-patches-fixes.git
 PATCHREPO_FIXES_BRANCH=v2021.1.x
-PATCHREPO_FIXES_COMMIT=eb8490e7b1aa51c6daccdaae1cd8a7d16488408c
+PATCHREPO_FIXES_COMMIT=21248a0210d7322caec2e38c100073f9b9638d79
 
 PATCHREPO_PACKAGES_REPO=https://github.com/Neanderfunk/gluon-patches-packages.git
 PATCHREPO_PACKAGES_BRANCH=v2021.1.x

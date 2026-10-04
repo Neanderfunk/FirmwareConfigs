@@ -249,3 +249,4 @@ Sackgasse-Knoten über Karte/Kollektor beobachten. Ausgangswerte am Testknoten
 refault_file 20.
 
 Feed danach `db39f84` (04.10.2026): gluon-banner repariert (help, switch0 ausführbar, Konfliktwarnung, Radio-Variable, nodeinfo; uci show nur einmal, Login 2,0 -> 1,5 s).
+- Upgrade-Helfer fremder Boardfamilien (allnet, dir825, merakinand, openmesh) aus ar71xx/tiny raus (`lowflash/upgrade-helpers-tiny`), ~6 KiB.
