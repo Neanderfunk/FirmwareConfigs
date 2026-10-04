@@ -125,3 +125,14 @@ Feed danach `884f5b9` (04.10.2026): `neanderfunk-wifi-blackout` (Port aus
 v2025.1.x, reparierter Nachfolger von ath9kblackout, Zustimmung adorfer) in
 der Paketliste, site.conf-Abschnitt `wifi_blackout` mit den alten Werten
 171/281/10. Abhängigkeit `micrond` kommt aus dem OpenWrt-Paketfeed 19.07.
+
+## SSH-Schlüssel: nur RSA (dropbear 2019.78)
+
+dropbear aus OpenWrt 19.07 kann kein ed25519 (Packages-Session, am Testknoten
+WR841N v9 bestätigt: nur Hostkey ssh-rsa, ed25519-Login abgelehnt). Die
+`buildkeys/*.sshkeys` dieses Zweigs enthalten nur `ssh-rsa`; die meisten
+Sackgasse-Domains bauen ohnehin mit `*.nokeys` (keine Schlüssel). Beim Umbau
+**nicht** die Schlüsseldateien aus v2025.1.x übernehmen (dort ed25519,
+FirmwareConfigs `2b67aa2`), sonst kommt auf 2021.1-Knoten niemand mehr per
+Schlüssel hinein. Zugriff: `ssh -o HostKeyAlgorithms=+ssh-rsa
+-o PubkeyAcceptedAlgorithms=+ssh-rsa` (keine rsa-sha2-Signaturen).
