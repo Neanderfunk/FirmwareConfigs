@@ -100,6 +100,13 @@ lua5.1 -e "assert(loadstring('return ' .. io.open('$SITEDIR/site.conf'):read('*a
   || { echo "site.conf ist kein gueltiger Lua-Ausdruck" >&2; exit 1; }
 
 cd "$ROOT/gluon"
+# Module zuruecksetzen (wie GITRESET im ParallelBuildsystem): Aenderungen der
+# post-update-Patches aus dem letzten Lauf wuerden make update sonst stoeren.
+for m in openwrt packages/*; do
+  [ -d "$m/.git" ] || continue
+  git -C "$m" reset -q --hard
+  git -C "$m" clean -q -fd
+done
 ARGS=(GLUON_SITEDIR="$SITEDIR" GLUON_IMAGEDIR="$IMAGEDIR" GLUON_RELEASE="$SBRANCH"
       GLUON_AUTOUPDATER_BRANCH="$RELBRANCH" GLUON_AUTOUPDATER_ENABLED=1 BROKEN=1)
 
