@@ -296,7 +296,7 @@ Packages-Session, Paketliste hier.
 | gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |
 | gluon-banner / neanderfunk-gluonbanner-tiny | Verbesserungen aus neanderfunk-banner, ohne DSA/portrole | offen |
 | ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | erledigt, Feed `c91c8a8`; ffffm-Feed raus, site.conf-Key wirkt wieder |
-| (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | offen |
+| (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | erledigt, Feed `534bf94` (zieht gluon-web-admin, das die alten Images schon hatten; Seite auch ohne Device-Tree über gpio-keys) |
 | eulenfunk-ath9kblackout | neanderfunk-wifi-blackout | erledigt |
 | - | neanderfunk-respondd, neanderfunk-legacy-migrate | erledigt |
 

@@ -28,7 +28,8 @@ GLUON_SITE_PACKAGES := \
         neanderfunk-legacy-migrate \
         neanderfunk-wifi-blackout \
         neanderfunk-respondd \
-        neanderfunk-preserve-wifichannel
+        neanderfunk-preserve-wifichannel \
+        neanderfunk-button-bind
 
 # ffnord:
 GLUON_SITE_PACKAGES += \
