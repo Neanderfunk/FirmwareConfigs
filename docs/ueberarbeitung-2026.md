@@ -289,8 +289,8 @@ Packages-Session, Paketliste hier.
 | Sackgasse bisher | Nachfolger v2025.1.x | Stand |
 | --- | --- | --- |
 | gluon-weeklyreboot | neanderfunk-weeklyreboot | offen |
-| eulenfunk-hotfix | neanderfunk-hotfix | offen |
-| gluon-linkcheck | neanderfunk-linkcheck | offen |
+| eulenfunk-hotfix | neanderfunk-hotfix (+ neanderfunk-common) | erledigt, Feed `daa5e94` |
+| gluon-linkcheck | neanderfunk-linkcheck | erledigt, Feed `daa5e94` (läuft jetzt alle 5 min wie 2025.1) |
 | gluon-txpowerfix | neanderfunk-txpowerfix | Inhalt portiert, Name offen |
 | eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | offen |
 | gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |

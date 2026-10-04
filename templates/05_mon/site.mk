@@ -18,10 +18,11 @@ GLUON_FEATURES := \
 GLUON_SITE_PACKAGES := \
         respondd-module-airtime \
         gluon-weeklyreboot \
-        eulenfunk-hotfix \
+        neanderfunk-common \
+        neanderfunk-hotfix \
         gluon-txpowerfix \
         neanderfunk-gluonbanner-tiny \
-        gluon-linkcheck \
+        neanderfunk-linkcheck \
         gluon-authorized-keys \
         eulenfunk-migrate-updatebranch \
         neanderfunk-legacy-migrate \
