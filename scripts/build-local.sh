@@ -121,8 +121,10 @@ for r in $PATCHREPOS; do "$ROOT/patch-repos/$r/apply.sh" post-update; done
 # 6. bauen
 for t in "${TARGETS[@]}"; do
   echo "== make GLUON_TARGET=$t"
-  make GLUON_TARGET="$t" "${ARGS[@]}" -j "$JOBS" V=s 2>&1 | tee "$ROOT/build-$SBRANCH-$t.log" | grep -E "^(ERROR|make\[[0-9]\]: \*\*\*)|Error [0-9]|too big" || true
-  [ "${PIPESTATUS[0]}" -eq 0 ] || { echo "Bau $t gescheitert, Log: build-$SBRANCH-$t.log" >&2; exit 1; }
+  rc=0
+  make GLUON_TARGET="$t" "${ARGS[@]}" -j "$JOBS" V=s > "$ROOT/build-$SBRANCH-$t.log" 2>&1 || rc=$?
+  grep -E "^(ERROR|make\[[0-9]\]: \*\*\*)|too big" "$ROOT/build-$SBRANCH-$t.log" | tail -20 || true
+  [ "$rc" -eq 0 ] || { echo "Bau $t gescheitert (rc=$rc), Log: build-$SBRANCH-$t.log" >&2; exit 1; }
 done
 make manifest "${ARGS[@]}"
 echo "== fertig: $IMAGEDIR"
