@@ -199,7 +199,16 @@ Algorithmus ist die Kernel-Vorgabe lzo.
   (`/proc/slabinfo` bzw. MemFree mit und ohne geladenes ath9k), dann als
   Patch an mac80211 entscheiden.
 
-**Sprachen.** adorfer: Deutsch reicht. `GLUON_LANGS ?= de` gesetzt (vorher
-`de en`). Gluon 2021.1 nimmt `en` immer mit (Quellsprache, `package/gluon.mk`),
-Französisch war schon draußen; messbar spart das in 2021.1 nichts. `i18n/en.po`
-der Site bleibt, sonst zeigt ein englischer Browser die rohen msgids.
+**Sprachen.** adorfer: nur eine Sprache; weil Gluon 2021.1 `en` immer
+mitnimmt (Quellsprache, `package/gluon.mk`), fliegt **Deutsch** raus:
+`GLUON_LANGS ?= en`. Gemessen am WR841N-v9-Rootfs: 14 `*.de.lmo` mit 9,8 KB,
+ohne sie 4 KiB weniger squashfs. `i18n/de.po` der Site bleibt im Repo
+(Content-Session hat die Texte am 04.10. gekürzt, `90531ed`), wird aber nicht
+mehr gebaut.
+
+**Nachtrag adorfer:** RAM ist auf 4/32 nicht kritisch, Flash beißt. Deshalb:
+- tiny bekommt **1024-KiB-squashfs-Blöcke** (`gluon-patches-fixes` `v2021.1.x`
+  `62fe6ce`, `lowflash/squashfs-1024-tiny`), rund 73 KiB Flash weniger.
+- Die RAM-Kandidaten (Fragment-Cache, ath9k-Puffer, page-cluster) haben
+  Nachrang; nur angehen, wenn das Testgerät Druck zeigt.
+- Der Flash-Kandidat `kmod-lib-lz4` (unbenutzt bei lzo) bleibt auf der Liste.
