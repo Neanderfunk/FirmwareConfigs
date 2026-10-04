@@ -335,3 +335,7 @@ Baufehler unterwegs: luasrcdiet 1.0.0 scheitert an `0.1`/`0.5` (Feed
 `cd4a020` umgeht das), ag71xx-Patch hatte ein echtes Newline im String
 (hardware behoben). Feed danach `ce9fe33` (neanderfunk-nodeplacer im Feed,
 noch nicht in der Paketliste).
+
+Bau `24100418bro` mit `neanderfunk-nodeplacer` (adorfer): Rootfs 1990-1992 KiB
+(+10 KiB), Overlay weiter 512 KiB. Im letzten 64-KiB-Block bleiben aber nur
+7-15 KiB; das nächste größere Paket kostet einen Erase-Block (dann 448 KiB).
