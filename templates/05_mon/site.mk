@@ -29,11 +29,9 @@ GLUON_SITE_PACKAGES := \
         neanderfunk-wifi-blackout \
         neanderfunk-respondd \
         neanderfunk-preserve-wifichannel \
-        neanderfunk-button-bind
+        neanderfunk-button-bind \
+        neanderfunk-ssid-changer
 
-# ffnord:
-GLUON_SITE_PACKAGES += \
-	gluon-ssid-changer 
 
 # openwrt:
 # haveged und socat raus (adorfer 04.10.2026): urngd liefert die Entropie, socat

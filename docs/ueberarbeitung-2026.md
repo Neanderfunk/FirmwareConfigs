@@ -293,7 +293,7 @@ Packages-Session, Paketliste hier.
 | gluon-linkcheck | neanderfunk-linkcheck | erledigt, Feed `daa5e94` (läuft jetzt alle 5 min wie 2025.1) |
 | gluon-txpowerfix | neanderfunk-txpowerfix | erledigt, Feed `c91c8a8` |
 | eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | erledigt, Feed `c91c8a8` (Ziel-Branch sackgasse) |
-| gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |
+| gluon-ssid-changer | neanderfunk-ssid-changer | erledigt, Feed `3ac3aaf` (Shell-Fassung; harter WLAN-Neustart, wenn hostapd den HUP verschluckt; iwinfo zeigt in 19.07 die konfigurierte, nicht die gesendete SSID) |
 | gluon-banner / neanderfunk-gluonbanner-tiny | neanderfunk-banner (Kern mit nodestatus, ohne portrole/channel/offlinescan/scan-guard/flash) | erledigt, Feed `3b2a0d0`; grob 25-27 KB xz vor dem Minifizieren, nach Rangfolge Komfort, falls es eng wird |
 | ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | erledigt, Feed `c91c8a8`; ffffm-Feed raus, site.conf-Key wirkt wieder |
 | (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | erledigt, Feed `534bf94` (zieht gluon-web-admin, das die alten Images schon hatten; Seite auch ohne Device-Tree über gpio-keys) |
