@@ -136,3 +136,12 @@ Sackgasse-Domains bauen ohnehin mit `*.nokeys` (keine Schlüssel). Beim Umbau
 FirmwareConfigs `2b67aa2`), sonst kommt auf 2021.1-Knoten niemand mehr per
 Schlüssel hinein. Zugriff: `ssh -o HostKeyAlgorithms=+ssh-rsa
 -o PubkeyAcceptedAlgorithms=+ssh-rsa` (keine rsa-sha2-Signaturen).
+
+Feed danach `c8cd015` (04.10.2026): eulenfunk-hotfix `check_hostapd` repariert
+(Entscheidung adorfer): phy aus dem Pidfile-Namen statt aus `ps` (busybox ps
+kürzt ohne Terminal auf 80 Spalten), der Kanal-unbekannt-Check ist damit zum
+ersten Mal scharf (drei Läufe ohne Kanal -> WLAN-Neustart).
+
+Gerätedaten Testknoten WR841N v9 (24111111sta, Packages-Session): Overlay
+320 KiB gesamt, 84 KiB frei; RAM verfügbar ~9 MB. Alle Feed-Skripte liefen
+dort als Kopien mit Attrappen gegen die echten 2021.1-Bibliotheken fehlerfrei.
