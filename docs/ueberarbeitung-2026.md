@@ -300,6 +300,7 @@ Packages-Session, Paketliste hier.
 | eulenfunk-ath9kblackout | neanderfunk-wifi-blackout | erledigt |
 | - | neanderfunk-respondd, neanderfunk-legacy-migrate | erledigt |
 
-Funktionen statt Fixes nur bei genug Flash: ffac-autoupdater-wifi-fallback
-(Stabilität), ap-timer, node-whisperer, nodeplacer, setup-mode/-wifi,
-status-page (Komfort).
+Funktionen statt Fixes nur bei genug Flash. Reihenfolge (adorfer
+04.10.2026): ffac-autoupdater-wifi-fallback (Stabilität), dann
+**nodeplacer, status-page, setup-mode, setup-wifi, ap-timer**,
+node-whisperer zuletzt.
