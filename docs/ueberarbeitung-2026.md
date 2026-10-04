@@ -211,7 +211,12 @@ mehr gebaut.
   `62fe6ce`, `lowflash/squashfs-1024-tiny`), rund 73 KiB Flash weniger.
 - Die RAM-Kandidaten (Fragment-Cache, ath9k-Puffer, page-cluster) haben
   Nachrang; nur angehen, wenn das Testgerät Druck zeigt.
-- Der Flash-Kandidat `kmod-lib-lz4` (unbenutzt bei lzo) bleibt auf der Liste.
+- `kmod-lib-lz4` raus (adorfer): `kmod-zram` hängt nur noch an lzo
+  (`lowflash/zram-lzo-only`), ~13 KiB weniger.
+- **RAM-Druck im Auge behalten** (adorfer): 1024-KiB-Blöcke und lzo-only am
+  Testgerät über Tage beobachten (MemAvailable, Swap-Nutzung,
+  `workingset_refault`, Load); Gegenmittel in Reserve: Fragment-Cache 1,
+  `vm.page-cluster=0`, ath9k-Puffer.
 
 ## Neue Leitlinie: reparieren statt streichen (adorfer, 04.10.2026)
 
