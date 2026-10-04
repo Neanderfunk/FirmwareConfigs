@@ -309,3 +309,29 @@ node-whisperer zuletzt.
 liefert die Entropie, socat nutzte im Image nichts (nur das ausgeschaltete
 Beispiel in /etc/config/socat). Gemessen am WR841N-v9-Rootfs mit
 1024-KiB-Blöcken: socat ~59 KiB, haveged ~16 KiB.
+
+## Erster lokaler Bau: Flash-Bilanz (04.10.2026)
+
+`24100416bro`, Domain 21_dias-key, ar71xx-tiny, `scripts/build-local.sh`
+(Docker, Ubuntu 20.04), Feed `cd4a020`, alle Patch-Repos v2021.1.x. 60
+Images, alle gleich auf. Gemessen am squashfs-Kopf der sysupgrade-Images,
+Overlay = Partition `firmware` (0x3d0000 bei 4 MB) minus Ende des squashfs,
+auf 64 KiB gerundet:
+
+| | Kernel | Rootfs | Blockgröße | Overlay frei |
+| --- | --- | --- | --- | --- |
+| 24111216sackgasse (alt) | 1387-1394 KiB | 2136 KiB | 256 KiB | 320 KiB |
+| 24100416bro (neu) | 1387-1394 KiB | 1981 KiB | 1024 KiB | **512 KiB** |
+
+Rootfs 155 KiB kleiner trotz der neuen Pakete, **3 Erase-Blöcke mehr
+Overlay**. Im Image geprüft (WR841N v9): neanderfunk-* (hotfix, linkcheck,
+weeklyreboot, txpowerfix, banner/nodestatus, wifi-blackout, legacy-migrate,
+respondd, button-bind, ssid-changer, preserve-wifichannel),
+ffac-autoupdater-wifi-fallback; ohne socat, haveged, lz4, deutsche Kataloge
+und fremde Upgrade-Helfer; Branch broken; RSA-Testschlüssel nur lokal
+eingebacken.
+
+Baufehler unterwegs: luasrcdiet 1.0.0 scheitert an `0.1`/`0.5` (Feed
+`cd4a020` umgeht das), ag71xx-Patch hatte ein echtes Newline im String
+(hardware behoben). Feed danach `ce9fe33` (neanderfunk-nodeplacer im Feed,
+noch nicht in der Paketliste).
