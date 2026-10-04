@@ -4,7 +4,7 @@
 # Uebergangsloesung, bis das ParallelBuildsystem 2021.1 kann
 # (docs/ueberarbeitung-2026.md).
 #
-#   scripts/build-local.sh <template> [target ...]
+#   scripts/build-local.sh <template> [target ...]   (ohne Target: targets.conf)
 #
 # Beispiel: SBRANCH=24100416bro RELBRANCH=broken \
 #           EXTRA_SSH_KEY=~/.ssh/id_rsa_sackgasse.pub \
@@ -52,7 +52,12 @@ if [ "${IN_CONTAINER:-}" != 1 ]; then
 fi
 
 TEMPLATE="$1"; shift
-TARGETS=("$@"); [ ${#TARGETS[@]} -gt 0 ] || TARGETS=(ar71xx-tiny)
+TARGETS=("$@")
+if [ ${#TARGETS[@]} -eq 0 ]; then
+  # ohne Angabe: die aktiven Targets aus targets.conf ("-" davor = aus)
+  . "$ROOT/targets.conf"
+  for t in "${GLUON_TARGETS[@]}"; do case "$t" in -*) ;; *) TARGETS+=("$t") ;; esac; done
+fi
 . "$ROOT/build.conf"
 SITEDIR="$ROOT/assembled/$TEMPLATE"
 IMAGEDIR="$ROOT/images/$SBRANCH/$TEMPLATE"
