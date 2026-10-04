@@ -145,3 +145,61 @@ ersten Mal scharf (drei Läufe ohne Kanal -> WLAN-Neustart).
 Gerätedaten Testknoten WR841N v9 (24111111sta, Packages-Session): Overlay
 320 KiB gesamt, 84 KiB frei; RAM verfügbar ~9 MB. Alle Feed-Skripte liefen
 dort als Kopien mit Attrappen gegen die echten 2021.1-Bibliotheken fehlerfrei.
+
+## Speicher: squashfs, zram, WLAN-Puffer, Sprachen (Prüfung 04.10.2026)
+
+Grundlage: die echten Images `24111216sackgasse`, OpenWrt 19.07
+(`1da2e82c11`), Gluon `3181e496`. Ziel ist dieselbe Art Entlastung wie bei den
+64-MB-Dualband-Geräten in 2023.2/2025.1 (router-werkstatt
+`docs/ramdruck-64mb.md`), hier aber mit 4 MB Flash **und** 32 MB RAM.
+
+**squashfs-Blockgröße.** Gemessen: tiny-Images 256 KiB (Gluon
+`targets/generic`), generic-Images 64 KiB (Gluon setzt das für
+ar71xx-generic). Das Rootfs des WR841N v9 neu gepackt (xz, ohne die
+OpenWrt-eigenen Feinoptionen, deshalb nur relativ zu lesen):
+
+| Block | Rootfs | gegenüber 256 KiB |
+| --- | --- | --- |
+| 64 KiB | 2270 KiB | +117 KiB |
+| 128 KiB | 2203 KiB | +50 KiB |
+| 256 KiB | 2153 KiB | 0 |
+| 512 KiB | 2117 KiB | -35 KiB |
+| 1024 KiB | 2079 KiB | -73 KiB |
+
+- **tiny bleibt bei 256 KiB.** Kleiner geht nicht (84 KiB Overlay frei),
+  größer kostet RAM: Der Kernel hält einen Fragment-Cache von drei Blöcken
+  (`CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3`) plus Lesepuffer und
+  xz-Wörterbuch je Blockgröße, bei 1024 KiB also gut 3 MB mehr; auf 32 MB mit
+  ~9 MB verfügbar nicht vertretbar. 512 KiB brächte einen halben
+  Erase-Block für über 1 MB RAM: nein.
+- **generic bleibt bei 64 KiB** (8-MB-Flash, dort ist RAM knapper als Flash).
+- **Kandidat ohne Flash-Kosten:** `CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=1` für
+  tiny spart zwei Blöcke, also 512 KiB RAM. Risiko: mehr Dekompression bei
+  Dateien in Fragmenten. Am Testgerät messen (MemAvailable, Refaults, Load).
+
+**zram.** Die Sackgasse baut zram mit `KERNEL_SWAP` (Patch `kernelswapon`)
+und einem gekürzten `zram.init`: Größe RAM/2 minus 5 MB, also etwa 8 MB.
+Algorithmus ist die Kernel-Vorgabe lzo.
+- **Kandidat ohne Flash-Kosten:** `vm.page-cluster=0` in sysctl.d (keine
+  Swap-Vorauslese von 8 Seiten, für zram üblich), ggf. `vm.swappiness=100`.
+  Eine Zeile, am Testgerät prüfen.
+- **Kandidat Flash:** `kmod-lib-lz4` kommt über `kmod-zram` mit ins Image, wird
+  bei lzo aber nicht genutzt. Weglassen spart einige KiB; braucht eine
+  Anpassung an der Abhängigkeit von kmod-zram. Vorher die Größe des Pakets im
+  Image messen.
+
+**WLAN-Puffer.**
+- Gluon 2021.1 setzt bei 32 MB RAM schon `fq_memory_limit` auf 256 KiB
+  (`01-gluon-core-codel-memusage`); mehr bringt dort nichts.
+- **Kandidat ath9k:** Der Treiber legt fest `ATH_RXBUF` 512 und `ATH_TXBUF`
+  512 Puffer an (`ath9k.h`). Jeder Empfangspuffer ist ein skb für eine volle
+  MPDU (3840 Byte plus Verwaltung), vermutlich aus dem 8-KiB-Slab. Das wären
+  bis zu 2-4 MB vorab belegt. 128 statt 512 könnte auf 32 MB viel bringen,
+  Risiko sind Paketverluste unter Last. **Erst am Testgerät messen**
+  (`/proc/slabinfo` bzw. MemFree mit und ohne geladenes ath9k), dann als
+  Patch an mac80211 entscheiden.
+
+**Sprachen.** adorfer: Deutsch reicht. `GLUON_LANGS ?= de` gesetzt (vorher
+`de en`). Gluon 2021.1 nimmt `en` immer mit (Quellsprache, `package/gluon.mk`),
+Französisch war schon draußen; messbar spart das in 2021.1 nichts. `i18n/en.po`
+der Site bleibt, sonst zeigt ein englischer Browser die rohen msgids.
