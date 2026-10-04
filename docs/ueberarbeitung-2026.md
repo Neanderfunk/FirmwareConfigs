@@ -97,3 +97,10 @@ site.mk das Feature `web-wizard`, das Template im Git nicht. Das alte
 Platzhalter zu ersetzen. Vor dem ersten Bau mit dem ParallelBuildsystem den
 alten `build.sh` (Tag `archiv/v2021.x-eulenfunk-b642e73`) darauf
 durchsehen.
+
+Feed danach `0f75cb7` (04.10.2026): `gluon-txpowerfix` ist der Port von
+`neanderfunk-txpowerfix` aus v2025.1.x (Entscheidung adorfer: Country-Logik
+und htmode bleiben, vorhandene txpower-Einträge werden einmal gelöscht, neue
+nicht gesetzt; kein Init-Skript, kein wifi down/up mehr). Baut jetzt aus
+luasrc, braucht also luasrcdiet/host wie legacy-migrate. Der Load-Check im
+hotfix bleibt unverändert (adorfer).
