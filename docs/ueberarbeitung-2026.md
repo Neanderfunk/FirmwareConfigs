@@ -212,3 +212,25 @@ mehr gebaut.
 - Die RAM-Kandidaten (Fragment-Cache, ath9k-Puffer, page-cluster) haben
   Nachrang; nur angehen, wenn das Testgerät Druck zeigt.
 - Der Flash-Kandidat `kmod-lib-lz4` (unbenutzt bei lzo) bleibt auf der Liste.
+
+## Neue Leitlinie: reparieren statt streichen (adorfer, 04.10.2026)
+
+Fehlerhafte Checks werden nicht mehr gestrichen, sondern repariert, und zwar
+mit den Reparaturen aus 2025.1 zurückportiert, wo es geht. Das löst die
+Empfehlung "ohne Entscheidung streichen" aus der Kandidatenliste
+(router-werkstatt `docs/sackgasse-rebuild-kandidaten.md`, Abschnitt D) ab.
+
+Feed danach `a4d58cc`:
+- `c7d085a` eulenfunk-hotfix: neues `common.sh` (strike, autoupdater_busy,
+  WLAN-Lock, harter Reboot); healthcheck (OOM-Muster, DFS mit 200 Zeilen und
+  3 Läufen, br-client nach 4 Läufen, flock), check_hostapd (Pending per
+  jsonfilter, 30 min Sperre; BSS-Status per ubus geht mit hostapd 2019 nicht),
+  rebootIfNoGw (Gateway-Leiter zurück, 4 Läufe), IfNoWificlient.
+- `2d8ec74` gluon-linkcheck: Leiter wie 2025.1 (melden, melden, WLAN neu,
+  Reboot; erste Stunde nur melden), flock, Scan mit 20-s-Abbruch.
+- `a4d58cc` gluon-ssid-changer: Schalter tolerant, leerer Zähler = 0.
+
+Mehrere Checks sind damit **zum ersten Mal scharf**. Abnahme am Testgerät
+muss auch "nichts passiert im Normalbetrieb über Tage" zeigen.
+Als Nächstes prüft die Packages-Session `neanderfunk-respondd` (Wunsch
+adorfer) für 19.07.
