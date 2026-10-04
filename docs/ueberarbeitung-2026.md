@@ -107,3 +107,16 @@ und htmode bleiben, vorhandene txpower-Einträge werden einmal gelöscht, neue
 nicht gesetzt; kein Init-Skript, kein wifi down/up mehr). Baut jetzt aus
 luasrc, braucht also luasrcdiet/host wie legacy-migrate. Der Load-Check im
 hotfix bleibt unverändert (adorfer).
+
+## Tunneldigger ohne WAN (Pflicht, adorfer)
+
+Der Fix für "VPN aktiv, aber kein WAN" kommt in jedem Fall mit, zwei Teile:
+
+- Watchdog: `gluon-patches-packages` `v2021.1.x` `69eace4` (Packages-Session),
+  Port von FirmwareConfigs v2023.2.x `e362e4d`.
+- Client: `gluon-patches-fixes` `v2021.1.x` `c06ae99`
+  (`tunneldigger-reinit-backoff`, Modulpatch nach `patches/packages/gluon`).
+
+Pins in `templates/05_mon/patchrepos`; wirksam, sobald prepare.sh die
+Patch-Repos anwendet (Umbau, Schritt 1). Beim ersten Bau prüfen, dass
+`git am` im Modul packages/gluon greift.

@@ -1,0 +1,19 @@
+# Patch-Repos, die prepare.sh neben dem Gluon-Baum unter patch-repos/<name>
+# am gepinnten Commit bereitstellt und deren apply.sh es aufruft (Aufbau wie
+# in FirmwareConfigs v2025.1.x).
+#
+# Sackgasse 2021.1: Zweige v2021.1.x. gluon-patches-hardware hat noch keinen
+# v2021.1.x-Zweig (WR841-8M/16M und Geraete-Patches folgen beim Umbau).
+#
+# HINWEIS: Wirksam erst, wenn prepare.sh dieses Zweigs die Patch-Repos
+# anwendet (Umbau auf den Aufbau von v2025.1.x, docs/ueberarbeitung-2026.md).
+
+PATCHREPOS="fixes packages"
+
+PATCHREPO_FIXES_REPO=https://github.com/Neanderfunk/gluon-patches-fixes.git
+PATCHREPO_FIXES_BRANCH=v2021.1.x
+PATCHREPO_FIXES_COMMIT=c06ae99deb98b7009ee2280c461022e7a5552add
+
+PATCHREPO_PACKAGES_REPO=https://github.com/Neanderfunk/gluon-patches-packages.git
+PATCHREPO_PACKAGES_BRANCH=v2021.1.x
+PATCHREPO_PACKAGES_COMMIT=69eace49525cdc0f2c15a943df9df293d5a9b145
