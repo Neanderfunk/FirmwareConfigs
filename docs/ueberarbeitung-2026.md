@@ -250,3 +250,22 @@ refault_file 20.
 
 Feed danach `db39f84` (04.10.2026): gluon-banner repariert (help, switch0 ausführbar, Konfliktwarnung, Radio-Variable, nodeinfo; uci show nur einmal, Login 2,0 -> 1,5 s).
 - Upgrade-Helfer fremder Boardfamilien (allnet, dir825, merakinand, openmesh) aus ar71xx/tiny raus (`lowflash/upgrade-helpers-tiny`), ~6 KiB.
+
+## Stabilität und Client aus den höheren Zweigen (04.10.2026)
+
+Bestandsaufnahme der Packages-Session, entschieden hier:
+- **ag71xx kein BUG() bei leerem RX-Ring**: 19.07 hat im ar71xx-Treiber
+  dieselbe Assertion (`ag71xx_main.c:1094`). Portiert, `gluon-patches-hardware`
+  `v2021.1.x` `6c61fb6` (neuer Zweig), `kernel/ag71xx-rx-ring-no-bug`.
+- **tunneldigger-Watchdog als Shell** statt Lua (Packages-Session,
+  `gluon-patches-packages` `b003935`): kein Lua-Start alle 5 Minuten.
+- **mcast_rate 24000** statt 12000 auf beiden Bändern, wie in 2025.1
+  (weniger Sendezeit für Mesh-Broadcasts; gilt nur fürs Senden).
+- `wifi24.preserve_channels` als wirkungslos kommentiert; die Kanäle hält
+  `ffffm-keep-radio-channel` über uci.
+- Nicht übernommen: `limit-wireless-buffers` (2021.1 setzt bei ≤32 MB schon
+  256 KiB), `no-watermark-boost` (Kernel 4.14 kennt es nicht),
+  `state-check-shell` (gibt es in 2021.1 nicht), `sysctl-64m-min-free` (RAM
+  nicht kritisch), airtime-Plausibilität (mt76-Problem), Autoupdater-Härtung
+  (wie 2025.1 aus), Komfort-Fixes des Config-Mode (Rangfolge, Wizard ist
+  ohnehin nicht im Image).
