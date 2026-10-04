@@ -111,7 +111,7 @@ U=http://imageslive.ffdus.de/images2023.2ad;C=$(uci get autoupdater.broken.mirro
 ## Beim Testen besonders interessant
 
 **Vor allem: der neue Setup-Mode, eingerichtet per WLAN vom Smartphone aus.**
-Den Router in den Setup-Mode bringen (Reset-Taste mindestens 3 Sekunden halten),
+Den Router in den Setup-Mode bringen (Reset-Taste etwa 10 Sekunden halten),
 dann mit dem Handy ins WLAN `setup.gluon_…` gehen (siehe oben) und den Router
 komplett einrichten. Uns interessiert:
 
