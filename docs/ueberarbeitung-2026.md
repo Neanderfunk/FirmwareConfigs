@@ -66,3 +66,19 @@ hineinkommen.
   Testplatz, Manifest.
 - **Packages-Session:** Feed `v2021.1.x` (Paketfixes, Diät der Feed-Pakete,
   Client-Fixes, legacy-migrate), `gluon-patches-packages` `v2021.1.x`.
+
+## Aufträge aus dem Feed v2021.1.x (beim Umbau erledigen)
+
+Packages-Session, 04.10.2026 (noch kein Pin, Sammel-Pin nach Abschnitt C):
+
+- [ ] `eulenfunk-ath9kblackout` aus der Paketliste nehmen und den
+  site.conf-Abschnitt `ath9kblackout { blackoutwait, resetwait, stepsize }`
+  streichen (Paket im Feed entfernt, `a07f6d8`).
+- [ ] `wireless-tools`, falls irgendwo ausdrücklich in site.mk/Paketliste,
+  ebenfalls raus (txpowerfix hängt nicht mehr daran, `f812b42`, ~17 KB xz).
+- Zur Kenntnis: `gluon-weeklyreboot` bringt `/etc/hotplug.d/ntp/99-weeklyreboot`
+  mit (`79e8ec0`), nutzt das ntpd-hotplug von 19.07.
+
+Feed-Commits bisher: `8b225c9` legacy-migrate, `abb7a40` linkcheck,
+`79e8ec0` weeklyreboot, `758c2e7` migrate-updatebranch, `a07f6d8`
+ath9kblackout raus, `f812b42` txpowerfix.
