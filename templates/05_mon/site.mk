@@ -25,7 +25,8 @@ GLUON_SITE_PACKAGES := \
         gluon-authorized-keys \
         eulenfunk-migrate-updatebranch \
         neanderfunk-legacy-migrate \
-        neanderfunk-wifi-blackout
+        neanderfunk-wifi-blackout \
+        neanderfunk-respondd
 
 # ffffm 
 # ev. kann man ffffm-additional-wifi-json-info teilweise durch standard gluon respondd-module-airtime ersetzen

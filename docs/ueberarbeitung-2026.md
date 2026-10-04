@@ -239,3 +239,11 @@ Mehrere Checks sind damit **zum ersten Mal scharf**. Abnahme am Testgerät
 muss auch "nichts passiert im Normalbetrieb über Tage" zeigen.
 Als Nächstes prüft die Packages-Session `neanderfunk-respondd` (Wunsch
 adorfer) für 19.07.
+
+Feed danach `a0ec492` (04.10.2026): `neanderfunk-respondd` (Wunsch adorfer) in
+der Paketliste. Mit dem 19.07-SDK gebaut 24 KB gestrippt, ~8,7 KB xz, RSS
+920 kB. Liefert in `statistics.neanderfunk.system` mem_available,
+refault_file, forks und zram; damit lässt sich der RAM-Druck aller
+Sackgasse-Knoten über Karte/Kollektor beobachten. Ausgangswerte am Testknoten
+(24111111sta): MemAvailable ~8,6 MB, zram 8 MB mit 68 KB Daten,
+refault_file 20.
