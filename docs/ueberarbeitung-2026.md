@@ -304,3 +304,8 @@ Funktionen statt Fixes nur bei genug Flash. Reihenfolge (adorfer
 04.10.2026): ffac-autoupdater-wifi-fallback (Stabilität), dann
 **nodeplacer, status-page, setup-mode, setup-wifi, ap-timer**,
 node-whisperer zuletzt.
+
+**haveged und socat raus** (adorfer 04.10.2026): urngd (OpenWrt 19.07, S00)
+liefert die Entropie, socat nutzte im Image nichts (nur das ausgeschaltete
+Beispiel in /etc/config/socat). Gemessen am WR841N-v9-Rootfs mit
+1024-KiB-Blöcken: socat ~59 KiB, haveged ~16 KiB.

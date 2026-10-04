@@ -36,11 +36,11 @@ GLUON_SITE_PACKAGES += \
 	gluon-ssid-changer 
 
 # openwrt:
+# haveged und socat raus (adorfer 04.10.2026): urngd liefert die Entropie, socat
+# nutzte nichts im Image; zusammen rund 75 KiB Flash.
 GLUON_SITE_PACKAGES += \
-	haveged \
 	iptables \
 	iwinfo \
-	socat \
         kmod-sched \
         libc \
         libpthread \
