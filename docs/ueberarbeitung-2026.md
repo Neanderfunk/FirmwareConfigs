@@ -277,3 +277,29 @@ weggepackt). WLAN-Puffer (adorfer: kleiner, ja): `lowmem/limit-wireless-buffers`
 in fixes `1714095`, gestaffelt wie 2025.1, für ≤32 MB 128 KiB. Die
 ath9k-Puffer (ATH_RXBUF/TXBUF 512) bleiben, bis eine Messung am Testgerät zeigt,
 dass sie viel RAM belegen.
+
+## Arbeitsauftrag präzisiert: Nachfolgepakete (adorfer, 04.10.2026)
+
+"Backport der Verbesserungen aus 2025.1" heißt: Jedes Paket, das wir im Lauf
+der Zeit umbenannt oder geforkt haben, wird in der Sackgasse durch seinen
+neanderfunk-Nachfolger aus v2025.1.x ersetzt (auf 19.07 zurückportiert),
+nicht nur mit Einzelfixes im Altpaket. Umsetzung im Feed durch die
+Packages-Session, Paketliste hier.
+
+| Sackgasse bisher | Nachfolger v2025.1.x | Stand |
+| --- | --- | --- |
+| gluon-weeklyreboot | neanderfunk-weeklyreboot | offen |
+| eulenfunk-hotfix | neanderfunk-hotfix | offen |
+| gluon-linkcheck | neanderfunk-linkcheck | offen |
+| gluon-txpowerfix | neanderfunk-txpowerfix | Inhalt portiert, Name offen |
+| eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | offen |
+| gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |
+| gluon-banner / neanderfunk-gluonbanner-tiny | Verbesserungen aus neanderfunk-banner, ohne DSA/portrole | offen |
+| ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | offen; danach ffffm-Feed raus, Kommentar "wirkungslos" zurück |
+| (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | offen |
+| eulenfunk-ath9kblackout | neanderfunk-wifi-blackout | erledigt |
+| - | neanderfunk-respondd, neanderfunk-legacy-migrate | erledigt |
+
+Funktionen statt Fixes nur bei genug Flash: ffac-autoupdater-wifi-fallback
+(Stabilität), ap-timer, node-whisperer, nodeplacer, setup-mode/-wifi,
+status-page (Komfort).
