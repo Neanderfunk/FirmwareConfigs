@@ -21,6 +21,9 @@
 #   RELBRANCH      Autoupdater-Branch und Spalte 1 der sites-Zeile (Vorgabe broken)
 #   EXTRA_SSH_KEY  weitere Public-Key-Datei, wird nur lokal eingebacken
 #   JOBS           make -j (Vorgabe: Kerne)
+#   POST_HOOK      Skript unter $ROOT, das nach den post-update-Patches im
+#                  gluon/-Verzeichnis laeuft (A/B-Testbauten, z. B. Puffergroessen;
+#                  local-hooks/ ist nicht in Git)
 #
 # Ablauf (cwd im Container = gluon/):
 #   1. Gluon am Pin aus build.conf klonen, Patch-Repos aus patchrepos klonen
@@ -44,7 +47,7 @@ if [ "${IN_CONTAINER:-}" != 1 ]; then
   fi
   exec docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp -e IN_CONTAINER=1 \
     -e SBRANCH="${SBRANCH:-24$(date +%m%d%H)bro}" -e RELBRANCH="${RELBRANCH:-broken}" \
-    -e JOBS="${JOBS:-$(nproc)}" "${EXTRA[@]}" \
+    -e JOBS="${JOBS:-$(nproc)}" -e POST_HOOK="${POST_HOOK:-}" "${EXTRA[@]}" \
     -v "$ROOT:$ROOT" -w "$ROOT" nf-gluon2021-build "$ROOT/scripts/build-local.sh" "$@"
 fi
 
@@ -129,6 +132,9 @@ for p in fix-respondd-rsk.sh fix-DIR615c1-imagetoobig.sh kernelswapon.sh ignore-
   echo "== patches/$p"; ( "$ROOT/patches/$p" )
 done
 for r in $PATCHREPOS; do "$ROOT/patch-repos/$r/apply.sh" post-update; done
+if [ -n "${POST_HOOK:-}" ]; then
+  echo "== POST_HOOK $POST_HOOK"; ( "$ROOT/$POST_HOOK" )
+fi
 
 # 6. bauen
 for t in "${TARGETS[@]}"; do

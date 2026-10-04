@@ -13,3 +13,4 @@ prepared
 *.log
 .log
 *.lockpatch-repos
+local-hooks/
