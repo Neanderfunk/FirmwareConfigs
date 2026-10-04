@@ -120,3 +120,8 @@ Der Fix für "VPN aktiv, aber kein WAN" kommt in jedem Fall mit, zwei Teile:
 Pins in `templates/05_mon/patchrepos`; wirksam, sobald prepare.sh die
 Patch-Repos anwendet (Umbau, Schritt 1). Beim ersten Bau prüfen, dass
 `git am` im Modul packages/gluon greift.
+
+Feed danach `884f5b9` (04.10.2026): `neanderfunk-wifi-blackout` (Port aus
+v2025.1.x, reparierter Nachfolger von ath9kblackout, Zustimmung adorfer) in
+der Paketliste, site.conf-Abschnitt `wifi_blackout` mit den alten Werten
+171/281/10. Abhängigkeit `micrond` kommt aus dem OpenWrt-Paketfeed 19.07.
