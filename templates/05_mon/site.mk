@@ -21,7 +21,7 @@ GLUON_SITE_PACKAGES := \
         neanderfunk-common \
         neanderfunk-hotfix \
         neanderfunk-txpowerfix \
-        neanderfunk-gluonbanner-tiny \
+        neanderfunk-banner \
         neanderfunk-linkcheck \
         gluon-authorized-keys \
         neanderfunk-migrate-updatebranch \

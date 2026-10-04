@@ -294,7 +294,7 @@ Packages-Session, Paketliste hier.
 | gluon-txpowerfix | neanderfunk-txpowerfix | erledigt, Feed `c91c8a8` |
 | eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | erledigt, Feed `c91c8a8` (Ziel-Branch sackgasse) |
 | gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |
-| gluon-banner / neanderfunk-gluonbanner-tiny | Verbesserungen aus neanderfunk-banner, ohne DSA/portrole | offen |
+| gluon-banner / neanderfunk-gluonbanner-tiny | neanderfunk-banner (Kern mit nodestatus, ohne portrole/channel/offlinescan/scan-guard/flash) | erledigt, Feed `3b2a0d0`; grob 25-27 KB xz vor dem Minifizieren, nach Rangfolge Komfort, falls es eng wird |
 | ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | erledigt, Feed `c91c8a8`; ffffm-Feed raus, site.conf-Key wirkt wieder |
 | (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | erledigt, Feed `534bf94` (zieht gluon-web-admin, das die alten Images schon hatten; Seite auch ohne Device-Tree über gpio-keys) |
 | eulenfunk-ath9kblackout | neanderfunk-wifi-blackout | erledigt |
