@@ -17,22 +17,18 @@ GLUON_FEATURES := \
 # neanderfunk (Feed Neanderfunk/packages v2021.1.x):
 GLUON_SITE_PACKAGES := \
         respondd-module-airtime \
-        gluon-weeklyreboot \
+        neanderfunk-weeklyreboot \
         neanderfunk-common \
         neanderfunk-hotfix \
-        gluon-txpowerfix \
+        neanderfunk-txpowerfix \
         neanderfunk-gluonbanner-tiny \
         neanderfunk-linkcheck \
         gluon-authorized-keys \
-        eulenfunk-migrate-updatebranch \
+        neanderfunk-migrate-updatebranch \
         neanderfunk-legacy-migrate \
         neanderfunk-wifi-blackout \
-        neanderfunk-respondd
-
-# ffffm 
-# ev. kann man ffffm-additional-wifi-json-info teilweise durch standard gluon respondd-module-airtime ersetzen
-GLUON_SITE_PACKAGES += \
-	ffffm-keep-radio-channel 
+        neanderfunk-respondd \
+        neanderfunk-preserve-wifichannel
 
 # ffnord:
 GLUON_SITE_PACKAGES += \

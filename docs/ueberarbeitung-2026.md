@@ -288,14 +288,14 @@ Packages-Session, Paketliste hier.
 
 | Sackgasse bisher | Nachfolger v2025.1.x | Stand |
 | --- | --- | --- |
-| gluon-weeklyreboot | neanderfunk-weeklyreboot | offen |
+| gluon-weeklyreboot | neanderfunk-weeklyreboot | erledigt, Feed `c91c8a8` |
 | eulenfunk-hotfix | neanderfunk-hotfix (+ neanderfunk-common) | erledigt, Feed `daa5e94` |
 | gluon-linkcheck | neanderfunk-linkcheck | erledigt, Feed `daa5e94` (läuft jetzt alle 5 min wie 2025.1) |
-| gluon-txpowerfix | neanderfunk-txpowerfix | Inhalt portiert, Name offen |
-| eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | offen |
+| gluon-txpowerfix | neanderfunk-txpowerfix | erledigt, Feed `c91c8a8` |
+| eulenfunk-migrate-updatebranch | neanderfunk-migrate-updatebranch | erledigt, Feed `c91c8a8` (Ziel-Branch sackgasse) |
 | gluon-ssid-changer | neanderfunk-ssid-changer | offen (2025.1 ist Lua, jede Minute) |
 | gluon-banner / neanderfunk-gluonbanner-tiny | Verbesserungen aus neanderfunk-banner, ohne DSA/portrole | offen |
-| ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | offen; danach ffffm-Feed raus, Kommentar "wirkungslos" zurück |
+| ffffm-keep-radio-channel | neanderfunk-preserve-wifichannel | erledigt, Feed `c91c8a8`; ffffm-Feed raus, site.conf-Key wirkt wieder |
 | (WLAN-Knopf, bisher nicht drin) | neanderfunk-button-bind | offen |
 | eulenfunk-ath9kblackout | neanderfunk-wifi-blackout | erledigt |
 | - | neanderfunk-respondd, neanderfunk-legacy-migrate | erledigt |
