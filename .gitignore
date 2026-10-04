@@ -12,4 +12,4 @@ prepared
 .DS_Store
 *.log
 .log
-*.lock
+*.lockpatch-repos

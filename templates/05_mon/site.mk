@@ -30,7 +30,8 @@ GLUON_SITE_PACKAGES := \
         neanderfunk-respondd \
         neanderfunk-preserve-wifichannel \
         neanderfunk-button-bind \
-        neanderfunk-ssid-changer
+        neanderfunk-ssid-changer \
+        ffac-autoupdater-wifi-fallback
 
 
 # openwrt:
