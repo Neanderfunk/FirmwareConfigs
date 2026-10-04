@@ -12,7 +12,9 @@ GLUON_FEATURES := \
 	ebtables-filter-ra-dhcp \
 	ebtables-source-filter \
         mesh-vpn-tunneldigger \
-	status-page\
+	status-page \
+	web-wizard \
+	web-advanced
 
 # neanderfunk (Feed Neanderfunk/packages v2021.1.x):
 GLUON_SITE_PACKAGES := \
@@ -32,7 +34,12 @@ GLUON_SITE_PACKAGES := \
         neanderfunk-button-bind \
         neanderfunk-ssid-changer \
         ffac-autoupdater-wifi-fallback \
-        neanderfunk-nodeplacer
+        neanderfunk-nodeplacer \
+        neanderfunk-status-page \
+        -gluon-config-mode-theme \
+        neanderfunk-config-mode-theme \
+        neanderfunk-setup-mode \
+        neanderfunk-setup-wifi
 
 
 # openwrt:
