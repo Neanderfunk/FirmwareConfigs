@@ -269,3 +269,11 @@ Bestandsaufnahme der Packages-Session, entschieden hier:
   nicht kritisch), airtime-Plausibilität (mt76-Problem), Autoupdater-Härtung
   (wie 2025.1 aus), Komfort-Fixes des Config-Mode (Rangfolge, Wizard ist
   ohnehin nicht im Image).
+
+Feed danach `cbee886` (04.10.2026): `gluon-banner` heißt jetzt
+`neanderfunk-gluonbanner-tiny` (Statusblock nur noch einmal in nodeinfo,
+gluonShellDiet angewendet; xz nur ~170 B weniger, die Dopplung hatte xz schon
+weggepackt). WLAN-Puffer (adorfer: kleiner, ja): `lowmem/limit-wireless-buffers`
+in fixes `1714095`, gestaffelt wie 2025.1, für ≤32 MB 128 KiB. Die
+ath9k-Puffer (ATH_RXBUF/TXBUF 512) bleiben, bis eine Messung am Testgerät zeigt,
+dass sie viel RAM belegen.

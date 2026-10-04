@@ -20,7 +20,7 @@ GLUON_SITE_PACKAGES := \
         gluon-weeklyreboot \
         eulenfunk-hotfix \
         gluon-txpowerfix \
-        gluon-banner \
+        neanderfunk-gluonbanner-tiny \
         gluon-linkcheck \
         gluon-authorized-keys \
         eulenfunk-migrate-updatebranch \
