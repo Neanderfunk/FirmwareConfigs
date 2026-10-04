@@ -12,7 +12,12 @@
 #
 # Umgebung:
 #   SBRANCH        Release-Name (Vorgabe: 24<MMDDHH>bro, Jahr "verschoben", damit
-#                  kein Feldknoten es als neuer ansieht als 24111216sackgasse)
+#                  kein Feldknoten es als neuer ansieht als 24111216sackgasse).
+#                  Umgekehrt flasht der Autoupdater einen Testknoten mit Branch
+#                  sackgasse auf 24111216sackgasse zurueck (am 3e7c 04.10.2026
+#                  passiert): am Testknoten nach dem Flash den Autoupdater
+#                  abschalten. Ein Release fuers Feld braucht einen Namen, der
+#                  ueber 24111216sackgasse sortiert (echtes Jahr, 26...).
 #   RELBRANCH      Autoupdater-Branch und Spalte 1 der sites-Zeile (Vorgabe broken)
 #   EXTRA_SSH_KEY  weitere Public-Key-Datei, wird nur lokal eingebacken
 #   JOBS           make -j (Vorgabe: Kerne)
