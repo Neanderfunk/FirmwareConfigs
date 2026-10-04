@@ -1,3 +1,9 @@
+> **Überarbeitung 2026:** Dieser Zweig wird für einen neuen Sackgasse-Bau
+> (Gluon 2021.1, 4/32-Geräte) umgebaut, gebaut wird dann mit dem
+> ParallelBuildsystem. Das alte `build.sh` ist entfernt; Plan und Stand in
+> `docs/ueberarbeitung-2026.md`. Der Stand vorher: Tag
+> `archiv/v2021.x-eulenfunk-b642e73`.
+
 # Eulenfunk Firmware Repository - Stand 09.01.2021
 
 Freifunk Firmware für Freifunk Düsseldorf-Flingern und Freifunk im Neanderland (Neanderfunk) 
