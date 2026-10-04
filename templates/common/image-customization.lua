@@ -72,6 +72,7 @@ packages {
     '-gluon-config-mode-theme',           -- gluon
     'neanderfunk-setup-mode',             -- neanderfunk (zieht neanderfunk-config-mode-theme)
     'neanderfunk-setup-wifi',             -- neanderfunk (Setup-WLAN, site.conf setup_mode.wifi; ohne Funk wirkungslos)
+    'neanderfunk-legacy-migrate',         -- neanderfunk (grosse Spruenge auf 2025.1 ab Gluon 2015.1; x86: LAN/WAN an die Karte gebunden)
     'ffac-autoupdater-wifi-fallback',     -- community
     'ffbs-collect-debug-info',            -- community
     'ffbs-debugbathosts',                 -- community
