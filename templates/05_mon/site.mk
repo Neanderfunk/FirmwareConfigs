@@ -14,7 +14,7 @@ GLUON_FEATURES := \
         mesh-vpn-tunneldigger \
 	status-page\
 
-# eulenfunk:
+# neanderfunk (Feed Neanderfunk/packages v2021.1.x):
 GLUON_SITE_PACKAGES := \
         respondd-module-airtime \
         gluon-weeklyreboot \
@@ -24,7 +24,7 @@ GLUON_SITE_PACKAGES := \
         gluon-linkcheck \
         gluon-authorized-keys \
         eulenfunk-migrate-updatebranch \
-        eulenfunk-ath9kblackout
+        neanderfunk-legacy-migrate
 
 # ffffm 
 # ev. kann man ffffm-additional-wifi-json-info teilweise durch standard gluon respondd-module-airtime ersetzen

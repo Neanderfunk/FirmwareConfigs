@@ -71,10 +71,10 @@ hineinkommen.
 
 Packages-Session, 04.10.2026 (noch kein Pin, Sammel-Pin nach Abschnitt C):
 
-- [ ] `eulenfunk-ath9kblackout` aus der Paketliste nehmen und den
+- [x] `eulenfunk-ath9kblackout` aus der Paketliste nehmen und den
   site.conf-Abschnitt `ath9kblackout { blackoutwait, resetwait, stepsize }`
   streichen (Paket im Feed entfernt, `a07f6d8`).
-- [ ] `wireless-tools`, falls irgendwo ausdrücklich in site.mk/Paketliste,
+- [x] `wireless-tools`, falls irgendwo (stand nirgends ausdrücklich) ausdrücklich in site.mk/Paketliste,
   ebenfalls raus (txpowerfix hängt nicht mehr daran, `f812b42`, ~17 KB xz).
 - Zur Kenntnis: `gluon-weeklyreboot` bringt `/etc/hotplug.d/ntp/99-weeklyreboot`
   mit (`79e8ec0`), nutzt das ntpd-hotplug von 19.07.
@@ -82,3 +82,18 @@ Packages-Session, 04.10.2026 (noch kein Pin, Sammel-Pin nach Abschnitt C):
 Feed-Commits bisher: `8b225c9` legacy-migrate, `abb7a40` linkcheck,
 `79e8ec0` weeklyreboot, `758c2e7` migrate-updatebranch, `a07f6d8`
 ath9kblackout raus, `f812b42` txpowerfix.
+
+## Feed umgestellt (04.10.2026)
+
+`templates/05_mon/modules`: Feed `neanderfunk` = Neanderfunk/packages
+`v2021.1.x` `d0b4a86` (Sammel-Pin Abschnitt C), statt eulenfunk/packages
+`cd24c70`. ffki-Feed entfernt (kein Paket daraus im Image, `git://`-URL geht
+bei GitHub nicht mehr). `neanderfunk-legacy-migrate` in der Paketliste,
+`eulenfunk-ath9kblackout` und der site.conf-Abschnitt `ath9kblackout` raus.
+
+**Merkposten für den Umbau:** Das gebaute `24111216sackgasse` hatte in
+site.mk das Feature `web-wizard`, das Template im Git nicht. Das alte
+`build.sh` hat beim Zusammenbauen der Site also mehr gemacht als die
+Platzhalter zu ersetzen. Vor dem ersten Bau mit dem ParallelBuildsystem den
+alten `build.sh` (Tag `archiv/v2021.x-eulenfunk-b642e73`) darauf
+durchsehen.
