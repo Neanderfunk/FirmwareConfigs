@@ -276,7 +276,7 @@ gluonShellDiet angewendet; xz nur ~170 B weniger, die Dopplung hatte xz schon
 weggepackt). WLAN-Puffer (adorfer: kleiner, ja): `lowmem/limit-wireless-buffers`
 in fixes `1714095`, gestaffelt wie 2025.1, für ≤32 MB 128 KiB. Die
 ath9k-Puffer (ATH_RXBUF/TXBUF 512) bleiben, bis eine Messung am Testgerät zeigt,
-dass sie viel RAM belegen.
+dass sie viel RAM belegen. **Nachtrag:** gemessen ~1,55 MB beim Laden (WR841N v9); OpenWrt hat schon 256, wir gehen auf 128 (`kernel/ath9k-rxbuf-128`, hardware 1a500af).
 
 ## Arbeitsauftrag präzisiert: Nachfolgepakete (adorfer, 04.10.2026)
 
