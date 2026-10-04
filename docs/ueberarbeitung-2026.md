@@ -91,12 +91,15 @@ ath9kblackout raus, `f812b42` txpowerfix.
 bei GitHub nicht mehr). `neanderfunk-legacy-migrate` in der Paketliste,
 `eulenfunk-ath9kblackout` und der site.conf-Abschnitt `ath9kblackout` raus.
 
-**Merkposten für den Umbau:** Das gebaute `24111216sackgasse` hatte in
-site.mk das Feature `web-wizard`, das Template im Git nicht. Das alte
-`build.sh` hat beim Zusammenbauen der Site also mehr gemacht als die
-Platzhalter zu ersetzen. Vor dem ersten Bau mit dem ParallelBuildsystem den
-alten `build.sh` (Tag `archiv/v2021.x-eulenfunk-b642e73`) darauf
-durchsehen.
+**web-wizard geklärt:** Er kommt in 2021.1 über keine Abhängigkeit mit; nur
+das Feature `web-wizard` wählt die Wizard-Module (hostname, geo-location,
+contact-info, outdoor, dazu autoupdater/mesh-vpn), `package/features` in
+v2021.1.2. adorfer hat ihn am 28.01.2025 (`b642e73`) zusammen mit
+`web-advanced`, `eulenfunk-ch13to9` und `gluon-config-mode-geo-location-osm`
+aus dem Template genommen. Die Images `24111216sackgasse` stammen von davor
+und haben den Wizard noch (build.log: gluon-config-mode-* in allen
+Images). Ein Bau aus diesem Zweig hat ihn also nicht; passt zur Rangfolge
+(Einrichtungskomfort zuletzt), nach der Größenbilanz neu entscheiden.
 
 Feed danach `0f75cb7` (04.10.2026): `gluon-txpowerfix` ist der Port von
 `neanderfunk-txpowerfix` aus v2025.1.x (Entscheidung adorfer: Country-Logik
