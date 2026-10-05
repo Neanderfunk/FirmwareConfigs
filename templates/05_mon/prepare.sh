@@ -10,7 +10,6 @@
 
 pushd ../gluon ; git am ../patches/0001-*; popd ; # apply 0001-enumerated patches automaticylly
 pushd ../gluon ; ../patches/fix-respondd-rsk.sh; popd  # change respondd listener address to gluon 2016.x value
-pushd ../gluon ; ../patches/fix-DIR615c1-imagetoobig.sh; popd # remove DIR615C1 beeing too big
 pushd ../gluon ; ../patches/kernelswapon.sh; popd # enable swap for all
 pushd ../gluon ; ../patches/ignore-preservechannels-for-outdoormode.sh ; popd # correct handling of outdoor-devices (enable auto-channel)
 exit 0;
