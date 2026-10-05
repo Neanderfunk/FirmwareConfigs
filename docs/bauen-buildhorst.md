@@ -15,7 +15,7 @@ df -h /home/build         # Platz: rund 20 GB Baum + rund 100 GB Images (Schätz
 cd /home/build
 git clone -b v2021.x https://github.com/Neanderfunk/FirmwareConfigs.git sackgasse2021.x
 cd sackgasse2021.x
-docker build -t nf-gluon2021-build scripts/docker
+sg docker -c 'docker build -t nf-gluon2021-build scripts/docker'
 ```
 
 ## Bauen (alle aktiven Domains)
@@ -23,7 +23,7 @@ docker build -t nf-gluon2021-build scripts/docker
 ```sh
 cd /home/build/sackgasse2021.x
 git pull
-tmux new -s sackgasse 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scripts/build-local.sh --alle 2>&1 | tee build-alle.log'
+tmux new -s sackgasse "sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scripts/build-local.sh --alle 2>&1 | tee build-alle.log'"
 ```
 
 - `SBRANCH` muss über `24111216sackgasse` sortieren (das Skript prüft das),
@@ -31,6 +31,10 @@ tmux new -s sackgasse 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scripts/build-loca
 - Domains: alle nicht auskommentierten Zeilen in `sites.nefall.sackgasse`
   (Stand 05.10.2026: 29 Domains, je normal und `-key`, 58 Sites).
 - Targets: die aktiven aus `targets.conf` (ar71xx-tiny, ar71xx-generic).
+- `sg docker` (05.10.2026 auf horst noetig): Trotz Gruppe docker scheiterte
+  der Aufruf mit "permission denied ... docker.sock", wenn die Shell per `su`
+  kam oder ein aelterer tmux-Server die Sitzung startet; `sg` setzt die Gruppe
+  fuer genau diesen Aufruf. Ebenso `sg docker -c 'docker build ...'`.
 - Abkoppeln mit Strg-B d, wieder hinein mit `tmux attach -t sackgasse`.
 - Ein Fehler in einer Domain hält den Lauf nicht an; Zusammenfassung in
   `images/<SBRANCH>/build-summary.txt`, Logs `build-<SBRANCH>-<site>-<target>.log`.
