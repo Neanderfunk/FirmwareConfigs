@@ -5,6 +5,11 @@
 # (docs/ueberarbeitung-2026.md).
 #
 #   scripts/build-local.sh <template> [target ...]   (ohne Target: targets.conf)
+#   scripts/build-local.sh --alle [target ...]        alle aktiven Zeilen aus
+#                                                     sites.nefall.sackgasse
+#
+# Feldbau (alle Domains): SBRANCH=26MMDDHHsg RELBRANCH=sackgasse \
+#           scripts/build-local.sh --alle
 #
 # Beispiel: SBRANCH=24100416bro RELBRANCH=broken \
 #           EXTRA_SSH_KEY=~/.ssh/id_rsa_sackgasse.pub \
@@ -18,14 +23,18 @@
 #                  passiert): am Testknoten nach dem Flash den Autoupdater
 #                  abschalten. Ein Release fuers Feld braucht einen Namen, der
 #                  ueber 24111216sackgasse sortiert (echtes Jahr, 26...).
-#   RELBRANCH      Autoupdater-Branch und Spalte 1 der sites-Zeile (Vorgabe broken)
-#   EXTRA_SSH_KEY  weitere Public-Key-Datei, wird nur lokal eingebacken
+#   RELBRANCH      Autoupdater-Branch und Spalte 1 der sites-Zeile (Vorgabe broken).
+#                  Mit RELBRANCH=sackgasse muss SBRANCH ueber 24111216sackgasse
+#                  sortieren, sonst bricht das Skript ab.
+#   EXTRA_SSH_KEY  weitere Public-Key-Datei, wird nur lokal eingebacken; wie die
+#                  Schluessel aus buildkeys/ nur ssh-rsa (dropbear 2019.78 kennt
+#                  nichts anderes), andere Zeilen fallen mit Warnung heraus
 #   JOBS           make -j (Vorgabe: Kerne)
 #   POST_HOOK      Skript unter $ROOT, das nach den post-update-Patches im
 #                  gluon/-Verzeichnis laeuft (A/B-Testbauten, z. B. Puffergroessen;
 #                  local-hooks/ ist nicht in Git)
 #
-# Ablauf (cwd im Container = gluon/):
+# Ablauf (cwd im Container = gluon/), mit --alle Schritte 1 und 3-5 einmal:
 #   1. Gluon am Pin aus build.conf klonen, Patch-Repos aus patchrepos klonen
 #   2. Site aus templates/<template> + Zeile in sites.nefall.sackgasse bauen
 #   3. git am patches/0001 (WR841 8M/16M, legt einen OpenWrt-Patch an)
@@ -33,6 +42,9 @@
 #   5. alte Patches aus patches/ (respondd-rsk, kernelswapon,
 #      preservechannels), apply.sh post-update je Patch-Repo
 #   6. make je Target (BROKEN=1, V=s), make manifest
+#      Logs: build-<SBRANCH>-<template>-<target>.log; mit --alle laeuft es bei
+#      einem Fehler mit der naechsten Domain weiter, Zusammenfassung am Ende
+#      und in images/<SBRANCH>/build-summary.txt.
 
 set -o errexit -o nounset -o pipefail
 
@@ -51,7 +63,18 @@ if [ "${IN_CONTAINER:-}" != 1 ]; then
     -v "$ROOT:$ROOT" -w "$ROOT" nf-gluon2021-build "$ROOT/scripts/build-local.sh" "$@"
 fi
 
-TEMPLATE="$1"; shift
+if [ "$1" = --alle ]; then
+  shift
+  mapfile -t TEMPLATES < <(awk -F'\t+' '$1 !~ /^#/ && NF > 3 {gsub(/ /, "", $3); print $3}' "$ROOT/sites.nefall.sackgasse")
+  ALLE=1
+else
+  TEMPLATES=("$1"); shift
+  ALLE=0
+fi
+[ ${#TEMPLATES[@]} -gt 0 ] || { echo "Keine Templates gefunden" >&2; exit 1; }
+if [ "$RELBRANCH" = sackgasse ] && [[ ! "$SBRANCH" > 24111216sackgasse ]]; then
+  echo "SBRANCH=$SBRANCH sortiert nicht ueber 24111216sackgasse: Feldknoten wuerden ihn nicht nehmen" >&2; exit 1
+fi
 TARGETS=("$@")
 if [ ${#TARGETS[@]} -eq 0 ]; then
   # ohne Angabe: die aktiven Targets aus targets.conf ("-" davor = aus)
@@ -59,9 +82,7 @@ if [ ${#TARGETS[@]} -eq 0 ]; then
   for t in "${GLUON_TARGETS[@]}"; do case "$t" in -*) ;; *) TARGETS+=("$t") ;; esac; done
 fi
 . "$ROOT/build.conf"
-SITEDIR="$ROOT/assembled/$TEMPLATE"
-IMAGEDIR="$ROOT/images/$SBRANCH/$TEMPLATE"
-echo "== Sackgasse lokal: $TEMPLATE, ${TARGETS[*]}, Release $SBRANCH, Branch $RELBRANCH"
+echo "== Sackgasse lokal: ${#TEMPLATES[@]} Template(s) (${TEMPLATES[*]}), ${TARGETS[*]}, Release $SBRANCH, Branch $RELBRANCH"
 
 # 1. Gluon und Patch-Repos
 if [ ! -d "$ROOT/gluon/.git" ]; then
@@ -70,7 +91,7 @@ fi
 git -C "$ROOT/gluon" fetch -q origin
 git -C "$ROOT/gluon" checkout -q -f "$GLUON_COMMIT"
 git -C "$ROOT/gluon" clean -q -fd -e openwrt -e packages -e output -e tmp -e lede
-PR="$ROOT/templates/$TEMPLATE/patchrepos"
+PR="$ROOT/templates/${TEMPLATES[0]}/patchrepos"
 . "$PR"
 for r in $PATCHREPOS; do
   R=${r^^}; repo_var="PATCHREPO_${R}_REPO"; commit_var="PATCHREPO_${R}_COMMIT"
@@ -80,37 +101,62 @@ for r in $PATCHREPOS; do
   git -C "$d" checkout -q -f "${!commit_var}"
 done
 
-# 2. Site zusammenbauen
-LINE="$(awk -v t="$TEMPLATE" -F'\t+' '$1 !~ /^#/ && $3 ~ "^"t"[ ]*$" {print; exit}' "$ROOT/sites.nefall.sackgasse")"
-[ -n "$LINE" ] || { echo "Keine Zeile fuer $TEMPLATE in sites.nefall.sackgasse" >&2; exit 1; }
-IFS=$'\t' read -r -a C <<< "$(echo "$LINE" | tr -s '\t ' '\t')"
-rm -rf "$SITEDIR"; mkdir -p "$(dirname "$SITEDIR")"
-cp -r -L "$ROOT/templates/$TEMPLATE" "$SITEDIR"
-rep() { find "$SITEDIR" -type f -print0 | xargs -0 sed -i "s;$1;$2;g"; }
-us() { echo "$1" | sed -e 's/_/ /g'; }
-SSHKEYS="$(cat "$ROOT/buildkeys/${C[31]}")"
-if [ -n "${EXTRA_SSH_KEY:-}" ]; then
-  SSHKEYS="$SSHKEYS
-	  '$(cat "$EXTRA_SSH_KEY")',"
-fi
-rep SBRANCH "$SBRANCH"; rep RELBRANCH "$RELBRANCH"; rep GLUONBRANCH "${C[1]}"
-rep SITECODE "${C[3]}"; rep DOMAINNR "${C[4]}"; rep SITESMALL "${C[5]}"; rep SITEBIG "${C[6]}"
-rep FFPREFIX "${C[7]}"; rep METAPREFIX "${C[8]}"; rep MESHSSID "${C[9]}"
-rep DOMAINNAME "$(us "${C[10]}")"; rep SUPERNODEDEFAULT "${C[11]}"; rep V4PREFIX "${C[12]}"
-rep V6PREFIX "${C[13]}"; rep WIFICH24 "${C[14]}"; rep WIFICH5 "${C[15]}"; rep MAPLAT "${C[16]}"
-rep MAPLON "${C[17]}"; rep MAPZOOM "${C[18]}"; rep DOMAINHASH "${C[19]}"
-rep METANAME "$(us "${C[20]}")"; rep METAWEBSITE "${C[21]}"; rep MAPWEBSITE "${C[22]}"
-rep FWWEBSITEHOST "${C[23]}"; rep FWWEBSITETLD "${C[24]}"; rep OPKGFQDN "${C[25]}"
-rep SUPERNODETLD "${C[26]}"; rep DOMAINREGIONDE "$(us "${C[27]}")"; rep DOMAINREGIONEN "$(us "${C[28]}")"
-rep SETUPSKIP "${C[29]}"
-rep KEYFILESIGN "$(sed ':a;N;$!ba;s/\n/\\n/g' "$ROOT/buildkeys/${C[30]}")"
-rep KEYFILESSH "$(printf '%s' "$SSHKEYS" | sed ':a;N;$!ba;s/\n/\\n/g')"
-rep DOMAINLONGNAME "$(us "${C[32]}")"
-if grep -rq "SITECODE\|KEYFILESSH\|SBRANCH" "$SITEDIR"/site.conf "$SITEDIR"/site.mk; then
-  echo "Platzhalter nicht ersetzt:" >&2; grep -rn "SITECODE\|KEYFILESSH\|SBRANCH" "$SITEDIR"/site.* >&2; exit 1
-fi
-lua5.1 -e "assert(loadstring('return ' .. io.open('$SITEDIR/site.conf'):read('*a')))" \
-  || { echo "site.conf ist kein gueltiger Lua-Ausdruck" >&2; exit 1; }
+# Nur ssh-rsa-Zeilen durchlassen (dropbear 2019.78 der Sackgasse kennt kein ed25519/ecdsa)
+nur_rsa() {
+  local l
+  while IFS= read -r l; do
+    case "$l" in
+      *"'ssh-rsa "*|*"''"*) printf '%s\n' "$l" ;;
+      *ssh-*) echo "WARNUNG: kein ssh-rsa, nicht eingebaut: ${l:0:40}..." >&2 ;;
+      *) printf '%s\n' "$l" ;;
+    esac
+  done
+}
+
+# 2. Site zusammenbauen: site_bauen <template>
+site_bauen() {
+  local TEMPLATE="$1"
+  SITEDIR="$ROOT/assembled/$TEMPLATE"
+  IMAGEDIR="$ROOT/images/$SBRANCH/$TEMPLATE"
+  LINE="$(awk -v t="$TEMPLATE" -F'\t+' '$1 !~ /^#/ && $3 ~ "^"t"[ ]*$" {print; exit}' "$ROOT/sites.nefall.sackgasse")"
+  [ -n "$LINE" ] || { echo "Keine Zeile fuer $TEMPLATE in sites.nefall.sackgasse" >&2; return 1; }
+  IFS=$'\t' read -r -a C <<< "$(echo "$LINE" | tr -s '\t ' '\t')"
+  rm -rf "$SITEDIR"; mkdir -p "$(dirname "$SITEDIR")"
+  cp -r -L "$ROOT/templates/$TEMPLATE" "$SITEDIR"
+  rep() { find "$SITEDIR" -type f -print0 | xargs -0 sed -i "s;$1;$2;g"; }
+  us() { echo "$1" | sed -e 's/_/ /g'; }
+  SSHKEYS="$(nur_rsa < "$ROOT/buildkeys/${C[31]}")"
+  if [ -n "${EXTRA_SSH_KEY:-}" ]; then
+    if grep -q '^ssh-rsa ' "$EXTRA_SSH_KEY"; then
+      SSHKEYS="$SSHKEYS
+  	  '$(grep -m1 '^ssh-rsa ' "$EXTRA_SSH_KEY")',"
+    else
+      echo "WARNUNG: EXTRA_SSH_KEY ist kein ssh-rsa-Schluessel, nicht eingebaut" >&2
+    fi
+  fi
+  rep SBRANCH "$SBRANCH"; rep RELBRANCH "$RELBRANCH"; rep GLUONBRANCH "${C[1]}"
+  rep SITECODE "${C[3]}"; rep DOMAINNR "${C[4]}"; rep SITESMALL "${C[5]}"; rep SITEBIG "${C[6]}"
+  rep FFPREFIX "${C[7]}"; rep METAPREFIX "${C[8]}"; rep MESHSSID "${C[9]}"
+  rep DOMAINNAME "$(us "${C[10]}")"; rep SUPERNODEDEFAULT "${C[11]}"; rep V4PREFIX "${C[12]}"
+  rep V6PREFIX "${C[13]}"; rep WIFICH24 "${C[14]}"; rep WIFICH5 "${C[15]}"; rep MAPLAT "${C[16]}"
+  rep MAPLON "${C[17]}"; rep MAPZOOM "${C[18]}"; rep DOMAINHASH "${C[19]}"
+  rep METANAME "$(us "${C[20]}")"; rep METAWEBSITE "${C[21]}"; rep MAPWEBSITE "${C[22]}"
+  rep FWWEBSITEHOST "${C[23]}"; rep FWWEBSITETLD "${C[24]}"; rep OPKGFQDN "${C[25]}"
+  rep SUPERNODETLD "${C[26]}"; rep DOMAINREGIONDE "$(us "${C[27]}")"; rep DOMAINREGIONEN "$(us "${C[28]}")"
+  rep SETUPSKIP "${C[29]}"
+  rep KEYFILESIGN "$(sed ':a;N;$!ba;s/\n/\\n/g' "$ROOT/buildkeys/${C[30]}")"
+  rep KEYFILESSH "$(printf '%s' "$SSHKEYS" | sed ':a;N;$!ba;s/\n/\\n/g')"
+  rep DOMAINLONGNAME "$(us "${C[32]}")"
+  if grep -rq "SITECODE\|KEYFILESSH\|SBRANCH" "$SITEDIR"/site.conf "$SITEDIR"/site.mk; then
+    echo "Platzhalter nicht ersetzt:" >&2; grep -rn "SITECODE\|KEYFILESSH\|SBRANCH" "$SITEDIR"/site.* >&2; return 1
+  fi
+  lua5.1 -e "assert(loadstring('return ' .. io.open('$SITEDIR/site.conf'):read('*a')))" \
+    || { echo "site.conf ist kein gueltiger Lua-Ausdruck" >&2; return 1; }
+  ARGS=(GLUON_SITEDIR="$SITEDIR" GLUON_IMAGEDIR="$IMAGEDIR" GLUON_RELEASE="$SBRANCH"
+        GLUON_AUTOUPDATER_BRANCH="$RELBRANCH" GLUON_AUTOUPDATER_ENABLED=1 BROKEN=1)
+}
+
+site_bauen "${TEMPLATES[0]}"
 
 cd "$ROOT/gluon"
 # Module zuruecksetzen (wie GITRESET im ParallelBuildsystem): Aenderungen der
@@ -120,8 +166,6 @@ for m in openwrt packages/*; do
   git -C "$m" reset -q --hard
   git -C "$m" clean -q -fd
 done
-ARGS=(GLUON_SITEDIR="$SITEDIR" GLUON_IMAGEDIR="$IMAGEDIR" GLUON_RELEASE="$SBRANCH"
-      GLUON_AUTOUPDATER_BRANCH="$RELBRANCH" GLUON_AUTOUPDATER_ENABLED=1 BROKEN=1)
 
 # 3. WR841 8M/16M (Gluon-Commit, legt patches/openwrt/0022-... an)
 if ! grep -q "TL-WR841ND-N-Devices-for-8M-and-16M" <(ls patches/openwrt/); then
@@ -141,13 +185,34 @@ if [ -n "${POST_HOOK:-}" ]; then
   echo "== POST_HOOK $POST_HOOK"; ( "$ROOT/$POST_HOOK" )
 fi
 
-# 6. bauen
-for t in "${TARGETS[@]}"; do
-  echo "== make GLUON_TARGET=$t"
-  rc=0
-  make GLUON_TARGET="$t" "${ARGS[@]}" -j "$JOBS" V=s > "$ROOT/build-$SBRANCH-$t.log" 2>&1 || rc=$?
-  grep -E "^(ERROR|make\[[0-9]\]: \*\*\*)|too big" "$ROOT/build-$SBRANCH-$t.log" | tail -20 || true
-  [ "$rc" -eq 0 ] || { echo "Bau $t gescheitert (rc=$rc), Log: build-$SBRANCH-$t.log" >&2; exit 1; }
+# 6. bauen, je Template
+FEHLER=()
+SUMMARY="$ROOT/images/$SBRANCH/build-summary.txt"
+mkdir -p "$ROOT/images/$SBRANCH"
+for TEMPLATE in "${TEMPLATES[@]}"; do
+  if ! site_bauen "$TEMPLATE"; then
+    FEHLER+=("$TEMPLATE:site"); [ "$ALLE" = 1 ] && continue; exit 1
+  fi
+  ok=1
+  for t in "${TARGETS[@]}"; do
+    LOG="$ROOT/build-$SBRANCH-$TEMPLATE-$t.log"
+    echo "== $TEMPLATE: make GLUON_TARGET=$t ($(date +%H:%M))"
+    rc=0
+    make GLUON_TARGET="$t" "${ARGS[@]}" -j "$JOBS" V=s > "$LOG" 2>&1 || rc=$?
+    grep -E "^(ERROR|make\[[0-9]\]: \*\*\*)|too big" "$LOG" | tail -20 || true
+    if [ "$rc" -ne 0 ]; then
+      echo "Bau $TEMPLATE/$t gescheitert (rc=$rc), Log: $LOG" >&2
+      FEHLER+=("$TEMPLATE:$t"); ok=0
+      [ "$ALLE" = 1 ] && break; exit 1
+    fi
+  done
+  [ "$ok" = 1 ] || continue
+  make manifest "${ARGS[@]}"
+  n=$(ls "$IMAGEDIR/sysupgrade" 2>/dev/null | grep -c -- '-sysupgrade\.bin$' || true)
+  echo "$TEMPLATE ok, $n sysupgrade-Images" | tee -a "$SUMMARY"
 done
-make manifest "${ARGS[@]}"
-echo "== fertig: $IMAGEDIR"
+if [ ${#FEHLER[@]} -gt 0 ]; then
+  echo "FEHLER: ${FEHLER[*]}" | tee -a "$SUMMARY" >&2
+  exit 1
+fi
+echo "== fertig: $ROOT/images/$SBRANCH (${#TEMPLATES[@]} Template(s))"
