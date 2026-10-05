@@ -12,5 +12,6 @@ prepared
 .DS_Store
 *.log
 .log
-*.lockpatch-repos
+*.lock
+patch-repos/
 local-hooks/
