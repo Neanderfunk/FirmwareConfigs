@@ -11,7 +11,7 @@ Branch-Wechsel.
 
 ```sh
 docker --version          # fehlt Docker: Admin installiert docker.io und nimmt build in die Gruppe docker
-df -h /home/build         # Platz: rund 20 GB Baum + rund 100 GB Images (Schätzung, 58 Sites, tiny + generic)
+df -h /home/build         # Platz: rund 20 GB Baum + rund 100 GB Images (Schätzung, 60 Sites, tiny + generic)
 cd /home/build
 git clone -b v2021.x https://github.com/Neanderfunk/FirmwareConfigs.git sackgasse2021.x
 cd sackgasse2021.x
@@ -29,7 +29,7 @@ tmux new -s sackgasse "sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scri
 - `SBRANCH` muss über `24111216sackgasse` sortieren (das Skript prüft das),
   also mit `26` beginnen. Endung frei wählbar (`sg`, `sackgasse`).
 - Domains: alle nicht auskommentierten Zeilen in `sites.nefall.sackgasse`
-  (Stand 05.10.2026: 29 Domains, je normal und `-key`, 58 Sites).
+  (Stand 06.10.2026: 30 Domains, je normal und `-key`, 60 Sites).
 - Targets: die aktiven aus `targets.conf` (ar71xx-tiny, ar71xx-generic).
 - `sg docker` (05.10.2026 auf horst noetig): Trotz Gruppe docker scheiterte
   der Aufruf mit "permission denied ... docker.sock", wenn die Shell per `su`
