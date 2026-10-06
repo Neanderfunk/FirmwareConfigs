@@ -425,9 +425,11 @@ end
 -- mt7915: Unter 2023.2 kamen hier ffac-mt7915-maxinactivity und
 -- neanderfunk-mt7915-backlog hinzu (Backlog, openwrt/mt76#1009). Unter 2025.1
 -- gibt es ffac-mt7915-maxinactivity nicht mehr, und der Feed hat
--- neanderfunk-mt7915-backlog entfernt. Grund ist Gluons Patch 0012 (PLE-Queues
--- leeren) auf mt76 2025-11-06; der Power-Save-Strang von Mai/Juni 2026 ist in
--- 2025.1 nicht enthalten. neanderfunk-hotfix wifi_firmware bleibt. Grundlage
+-- neanderfunk-mt7915-backlog entfernt. Gluons Patch 0012 (PLE-Queues leeren)
+-- ist dabei NICHT im Image: gluon-patches-hardware kernel/mt7915-ps-aql
+-- (adb6e53, ab a50d4b3) ersetzt ihn durch die Power-Save/AQL-Patches aus Gluon
+-- main (#3673); ihre Wirkung im Feld ist noch nicht ausgewertet (U1).
+-- neanderfunk-hotfix wifi_firmware bleibt. Grundlage
 -- docs/mt7915-analyse.md, Neubewertung im Feed
 -- docs/gluon-2025.1-kompatibilitaet.md (50b249a).
 
