@@ -442,16 +442,17 @@ end
 -- den Handbetrieb bereit. disable_manifest() kommt aus gluon-patches-fixes
 -- (build/disable-manifest).
 --
--- EdgeRouter X/X-SFP (1.1 -> 2.0): neues Flash-Layout (darkxst/erx-migration),
--- bis zur ERX-Migration nach einem 2025.1-Release.
+-- EdgeRouter X/X-SFP (1.1 -> 2.0) stehen hier nicht mehr: gluon-patches-hardware
+-- devices/erx-ka-imagename (eb136fa) benennt sie in ubiquiti-edgerouter-x-ka bzw.
+-- -x-sfp-ka um. Nicht migrierte ERX finden damit keine Manifestzeile, migrierte
+-- (melden -ka) bekommen normale Updates (ERX-Migration, router-werkstatt
+-- docs/erx-migration-howto.md).
 -- Xiaomi Redmi AX6S/AX3200 (1.0 -> 2.0): neues Flash-Layout, Neuinstallation
 -- ueber factory.bin; steht in Gluons Release Notes 2025.1 neben dem ERX.
 -- Linksys E8450 UBI (1.0 -> 2.0).
 -- Grundlage: Vergleich DEVICE_COMPAT_VERSION aller Geraete zwischen dem
 -- OpenWrt von Gluon v2023.2.6 und v2025.1.x 0ad3ad5 (27.09.2026).
 if device({
-    'ubiquiti-edgerouter-x',
-    'ubiquiti-edgerouter-x-sfp',
     'xiaomi-redmi-router-ax6s',
     'linksys-e8450-ubi',
 }) then
