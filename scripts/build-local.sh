@@ -212,7 +212,7 @@ for TEMPLATE in "${TEMPLATES[@]}"; do
   done
   [ "$ok" = 1 ] || continue
   make manifest "${ARGS[@]}"
-  n=$(ls "$IMAGEDIR/sysupgrade" 2>/dev/null | grep -c -- '-sysupgrade\.bin$' || true)
+  n=$(ls "$IMAGEDIR/sysupgrade" 2>/dev/null | grep -c -- '-sysupgrade\.\(bin\|img\.gz\)$' || true)
   echo "$TEMPLATE ok, $n sysupgrade-Images" | tee -a "$SUMMARY"
 done
 if [ ${#FEHLER[@]} -gt 0 ]; then
