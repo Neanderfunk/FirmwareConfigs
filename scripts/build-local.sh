@@ -57,6 +57,10 @@ if [ "${IN_CONTAINER:-}" != 1 ]; then
     EXTRA_SSH_KEY="$(readlink -f "$EXTRA_SSH_KEY")"
     EXTRA=(-v "$EXTRA_SSH_KEY:/extra-ssh-key.pub:ro" -e EXTRA_SSH_KEY=/extra-ssh-key.pub)
   fi
+  # Nur ein Lauf je Baum: gluon/ wird zu Beginn ausgecheckt und gereinigt, ein
+  # zweiter Lauf zerstoert den ersten. Die Sperre haelt der docker-Client (fd 9).
+  exec 9>"$ROOT/build.lock"
+  flock -n 9 || { echo "In $ROOT laeuft schon ein Bau (build.lock): dessen Ende abwarten oder einen zweiten Baum klonen" >&2; exit 1; }
   exec docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp -e IN_CONTAINER=1 \
     -e SBRANCH="${SBRANCH:-24$(date +%m%d%H)bro}" -e RELBRANCH="${RELBRANCH:-broken}" \
     -e JOBS="${JOBS:-$(nproc)}" -e POST_HOOK="${POST_HOOK:-}" "${EXTRA[@]}" \
