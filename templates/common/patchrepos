@@ -13,7 +13,7 @@ PATCHREPOS="hardware fixes packages"
 
 PATCHREPO_HARDWARE_REPO=https://github.com/Neanderfunk/gluon-patches-hardware.git
 PATCHREPO_HARDWARE_BRANCH=v2025.1.x
-PATCHREPO_HARDWARE_COMMIT=ab19bf1b46d34315a92f61974dd37f8a9ede9604
+PATCHREPO_HARDWARE_COMMIT=a26f304aba11c61adb3d804e00098db5eb1cca2d
 
 PATCHREPO_FIXES_REPO=https://github.com/Neanderfunk/gluon-patches-fixes.git
 PATCHREPO_FIXES_BRANCH=v2025.1.x
