@@ -54,7 +54,7 @@ Quelle, etwa ein lokaler Spiegel, geht über `GLUON_REPO` (Umgebung oder
 ### Aufruf
 
 ```
-../ParallelBuildsystem/build.sh --detach build.conf targets.conf domains.conf [target ...] [--resume | --restart]
+../ParallelBuildsystem/build.sh --detach build.conf targets.conf domains.conf [target ...] [--resume | --restart] [--force]
 ```
 
 `--detach` startet den Lauf in einer tmux-Sitzung und verbindet sofort
