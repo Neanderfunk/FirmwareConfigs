@@ -300,6 +300,7 @@ pkgs_usb_net = {
     'kmod-usb-net-rndis',
     'kmod-usb-net-rtl8152',
     'kmod-usb-net-smsc95xx',
+    'kmod-usb-net-sr9700',  -- 0fe6:9700, als "DM9601" verkauft; dm9601 kennt nur 0fe6:8101
 }
 
 pkgs_pci = {
