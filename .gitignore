@@ -27,3 +27,7 @@ patch-repos/
 
 # Cache der beim Bau neu erzeugten USB-Geraetelisten (prepare.sh usb_list_refresh)
 /usb-geraete-cache/
+
+# Klon der Stammdaten und Probeausgaben von scripts/sites-aus-stammdaten.py
+/.stammdaten/
+sites.nefall.*.neu
