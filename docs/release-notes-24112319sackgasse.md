@@ -102,7 +102,7 @@ Dienste auf dem Router:
 - **Netzwerktreiber:** Ein leerer Empfangspuffer in ag71xx führt nicht mehr zum
   Absturz.
 - **WLAN-Aussetzer:** `neanderfunk-wifi-blackout` ersetzt das alte
-  `eulenfunk-ath9kblackout`.
+  ath9k-Blackout-Paket.
 - **Geplante Aufgaben** starten mit versetzten Minuten statt alle zugleich.
 
 ## WLAN
