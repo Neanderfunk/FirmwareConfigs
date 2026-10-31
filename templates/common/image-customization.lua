@@ -308,6 +308,17 @@ if device({
     include_usb = false
 end
 
+-- Der EdgeRouter X bekommt das Migrationspaket: Auf 2023.2 ist dies nur noch
+-- das Zwischenimage, das den Knoten auf 2025.1 bringt.
+if device({
+    'ubiquiti-edgerouter-x',
+    'ubiquiti-edgerouter-x-sfp',
+}) then
+    packages {
+        'neanderfunk-erx-migrate',       -- neanderfunk
+    }
+end
+
 -- devices without usb ports
 if device({
     'ubiquiti-unifi-6-lr-v1',
