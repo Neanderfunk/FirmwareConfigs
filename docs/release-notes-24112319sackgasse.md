@@ -48,8 +48,9 @@ Rückmeldungen bitte an:
   oder das Fluten durch die Domain. Mit diesem Update können es auch die
   ältesten Router. Das betrifft nur Multicast, die Ersparnis ist nicht
   gemessen.
-- **Mesh-Rundrufe gehen mit 24 statt 12 Mbit/s raus**, auf beiden Bändern
-  (`mcast_rate = 24000`). Rechnerisch halbiert das ihre Sendezeit.
+- **WLAN-Mesh-Broadcasts gehen mit 24 statt 12 Mbit/s raus**, auf beiden
+  Bändern (`mcast_rate = 24000`). Rechnerisch halbiert das ihre Sendezeit. Im
+  Kabel-Mesh gilt diese Grenze nicht.
 - Der Backport baut auf der Vorarbeit von Linus Lüssing (T-X) auf,
   [Gluon-PR #3377](https://github.com/freifunk-gluon/gluon/pull/3377).
 
