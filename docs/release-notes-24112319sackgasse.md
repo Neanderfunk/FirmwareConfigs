@@ -21,6 +21,9 @@ Diese Release Notes beschreiben, was sich seit `24111216sackgasse` geändert
 hat. Gluon 2021.1 und OpenWrt 19.07 bekommen von dort keine Updates mehr. Alles
 hier Genannte ist aus neueren Versionen zurückgeholt.
 
+Die Zusammenfassung ohne Technikdetails steht im
+[Blogbeitrag](https://neanderfunk.de/update-fuer-unsere-aeltesten-router-neues-batman-adv-und-ein-zweites-standbein/).
+
 Rückmeldungen bitte an:
 
 - E-Mail: [projekt@neanderfunk.de](mailto:projekt@neanderfunk.de)
