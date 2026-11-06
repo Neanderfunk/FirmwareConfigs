@@ -75,6 +75,7 @@ packages {
     'neanderfunk-legacy-migrate',         -- neanderfunk (grosse Spruenge auf 2025.1 ab Gluon 2015.1; x86: LAN/WAN an die Karte gebunden)
     'neanderfunk-default-hostname',       -- neanderfunk (Vorgabe-Hostname <Praefix><Modell>-<4 Stellen node_id>; braucht gluon-patches-packages hostname/default-hostname)
     'neanderfunk-port-roles',             -- neanderfunk (Config-Mode-Seite "Ports": Rolle je Port; greift nur auf Wunsch, sonst Gluons Aufbau)
+    'neanderfunk-ddhcpd',                 -- neanderfunk (verteilter DHCP-Server; laeuft nur, wenn die Domain ddhcpd.enabled setzt; nie zusammen mit ffgraz-ddhcpd)
     'ffac-autoupdater-wifi-fallback',     -- community
     'ffbs-collect-debug-info',            -- community
     'ffbs-debugbathosts',                 -- community
