@@ -42,6 +42,7 @@ SPDX-License-Identifier: BSD-3-Clause
 import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -315,6 +316,13 @@ def main():
             if anders:
                 fehler(f"{d['domain_code']}: {EXPORT} und {sas.TSV} verschieden in {anders}")
     default = export["default_domain"]
+    # Gluon (need_alphanumeric_key): Domain-Codes nur [0-9a-zA-Z_]; bei uns
+    # <nr>_<kuerzel> wie SITE_CODE der sites-Dateien (adorfer 14.11.2026)
+    for c, d in domaenen.items():
+        if not re.fullmatch(r"[0-9a-zA-Z_]+", c):
+            fehler(f"Domain-Code {c}: Gluon erlaubt nur Buchstaben, Ziffern und _")
+        if c != d["tsv"]["SITE_CODE"]:
+            fehler(f"Domain-Code {c} ist nicht SITE_CODE {d['tsv']['SITE_CODE']}")
     if default not in domaenen:
         fehler(f"default_domain {default} fehlt in den Domaenen")
 
