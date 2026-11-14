@@ -50,7 +50,9 @@ Danach wie in `docs/ueberarbeitung-2026.md` bzw. router-werkstatt
 
 ## Vor dem Ausrollen
 
-- DNS: `sinope.eol.ffnef.de` und `lysithea.eol.ffnef.de` als CNAME auf
-  `sinope.ffnef.de` bzw. `lysithea.ffnef.de` (Reserve-Broker in der site.conf).
+- DNS: `sinope.eol.ffnef.de`, `lysithea.eol.ffnef.de`, `carme.eol.ffnef.de`
+  und `ananke.eol.ffnef.de` als CNAME auf den jeweiligen Namen unter
+  `ffnef.de` (Reserve-Broker in der site.conf, carme und ananke seit 14.11.2026).
+  Solange die Ziele selbst keinen DNS-Eintrag haben, ist das Vorrat.
 - Der Knoten `FF-Dresen-MGER-01` (UniFi AP, 13_dusfl) steckt in der Sackgasse,
   obwohl es für ihn 2025.1 gibt: per nodeplacer bzw. Hand auf stable holen.
