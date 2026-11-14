@@ -54,5 +54,6 @@ Danach wie in `docs/ueberarbeitung-2026.md` bzw. router-werkstatt
   und `ananke.eol.ffnef.de` als CNAME auf den jeweiligen Namen unter
   `ffnef.de` (Reserve-Broker in der site.conf, carme und ananke seit 14.11.2026).
   Solange die Ziele selbst keinen DNS-Eintrag haben, ist das Vorrat.
+  Die vier CNAMEs sind seit 14.11.2026 eingetragen (adorfer).
 - Der Knoten `FF-Dresen-MGER-01` (UniFi AP, 13_dusfl) steckt in der Sackgasse,
   obwohl es für ihn 2025.1 gibt: per nodeplacer bzw. Hand auf stable holen.
