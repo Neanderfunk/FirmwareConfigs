@@ -1,0 +1,23 @@
+# Erzeugt von scripts/multidomain-aus-stammdaten.py aus templates/common/site.mk
+# site.mk Neanderfunk for gluon v2023.2.x
+
+# GLUON_OUTPUTDIR := ${GLUON_SITEDIR}/output
+# ifdef GLUON_DEVICES
+# GLUON_OUTPUTDIR := $(GLUON_SITEDIR)/devices
+# endif
+# GLUON_PACKAGEDIR := $(GLUON_OUTPUTDIR)/packages/modules
+
+DEFAULT_GLUON_RELEASE := SBRANCH
+GLUON_RELEASE ?= $(DEFAULT_GLUON_RELEASE)
+
+GLUON_PRIORITY ?= 0
+GLUON_AUTOUPDATER_ENABLED ?= 1
+GLUON_LANGS ?= de en fr
+GLUON_REGION ?= eu
+GLUON_ATH10K_MESH ?= 11s
+GLUON_WLAN_MESH ?= 11s
+GLUON_DEPRECATED ?= full
+GLUON_MINIFY ?=1
+export BROKEN ?= 1
+
+GLUON_MULTIDOMAIN := 1
