@@ -31,3 +31,5 @@ patch-repos/
 # Klon der Stammdaten und Probeausgaben von scripts/sites-aus-stammdaten.py
 /.stammdaten/
 sites.nefall.*.neu
+templates/multidomain.neu/
+templates/multidomain.arbeit/
