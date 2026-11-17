@@ -28,7 +28,8 @@ Vorgehen:
    - sonst: Domain.
 3. Dazu kommen aus dem Export domain_names (anzeigename), hide_domain,
    domain_seed, neanderfunk_hostname_prefix, neanderfunk_legacy (mesh_id,
-   next_node_ip4, next_node_ip4_fest) und ddhcpd (nur bei an = true).
+   next_node_ip4, next_node_ip4_fest) und ddhcpd (nur bei an = true,
+   block_size nur, wenn der Export ihn nennt).
 4. Probe: Site und Domain nach Gluons Regel zusammengefuehrt muessen fuer
    jede Domaene wieder die ausgefuellte Single-Domain-Fassung ergeben, bis
    auf die Schluessel aus 3. und die in_site-Pfade aus 2.
@@ -364,6 +365,8 @@ def main():
             dd["ddhcpd"] = {"enabled": True, "range": dh["range"],
                             "client_prefix4": d["prefix4"], "router": dh["router"],
                             "dns": dh["dns"]}
+            if "block_size" in dh:
+                dd["ddhcpd"]["block_size"] = dh["block_size"]
 
     # Probe nach Gluons Regel
     eigene = [("domain_names",), ("hide_domain",), ("domain_seed",), ("site_code",),
