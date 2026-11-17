@@ -57,7 +57,9 @@ EXPORT = "erzeugt/firmware-multidomain.json"
 SCHEMA = 1
 VORLAGE = "templates/common"
 ZIEL = "templates/multidomain"
-SITES = "sites.nefall.multi"
+# je Autoupdater-Zweig eine sites-Datei; Release-Kuerzel (sta/bro) und
+# Autoupdater-Zweig kommen aus RELBRANCH, sonst sind beide gleich
+SITES = {"stable": "sites.nefall.multi", "broken": "sites.nefall.multi.bro"}
 # Dateien der Vorlage, die unveraendert gelten (Symlink nach common)
 GLEICH = ["image-customization.lua", "modules", "patchrepos", "prepare.sh",
           "usb-geraete.lua"]
@@ -437,24 +439,26 @@ def main():
     lua_laden(probe, arbeit)
     shutil.rmtree(arbeit)
 
-    # sites.nefall.multi: eine Zeile ohne, eine mit SSH-Schluessel (buildkeys/multidomain.sshkeys)
-    zeilen = []
-    for variante, code, skip, ssh in (("ohne", "ffnef-multi", "false", "ffnef.nokeys"),
-                                      ("key", "ffnef-multi-key", "true", "multidomain.sshkeys")):
-        z = dict(dt)
-        z.update(RELBRANCH="stable", GLUONBRANCH=konf["GLUONBRANCH"][0],
-                 TEMPLATE_NAME="multidomain", SITE_CODE=code, SETUP_SKIP=skip,
-                 KEY_FILE_SIGN="multidomain.signkeys", KEY_FILE_SSH=ssh)
-        for k in ("KEY_FILE_SIGN", "KEY_FILE_SSH"):
-            if not os.path.isfile(os.path.join("buildkeys", z[k])):
-                fehler(f"buildkeys/{z[k]} gibt es nicht")
-        zeilen.append([z[k] for k in sas.SPALTEN])
-    with open(os.path.join(raus, SITES), "w", encoding="utf-8") as f:
-        f.write("# Erzeugt von scripts/multidomain-aus-stammdaten.py, nicht von Hand aendern.\n"
-                f"# Stammdaten {commit}. Schluessel site-weit: buildkeys/multidomain.* (adorfer 17.11.2026).\n"
-                "# Nur RELBRANCH, GLUONBRANCH, TEMPLATE_NAME, SITE_CODE, SETUP_SKIP und\n"
-                "# KEY_FILE_* wirken; die Domain-Werte stehen in templates/multidomain/.\n"
-                + sas.tabelle(zeilen, ["#" + sas.SPALTEN[0]] + sas.SPALTEN[1:]))
+    # sites.nefall.multi(.bro): je eine Zeile ohne und mit SSH-Schluessel
+    # (buildkeys/multidomain.sshkeys)
+    for relbranch, sites in SITES.items():
+        zeilen = []
+        for variante, code, skip, ssh in (("ohne", "ffnef-multi", "false", "ffnef.nokeys"),
+                                          ("key", "ffnef-multi-key", "true", "multidomain.sshkeys")):
+            z = dict(dt)
+            z.update(RELBRANCH=relbranch, GLUONBRANCH=konf["GLUONBRANCH"][0],
+                     TEMPLATE_NAME="multidomain", SITE_CODE=code, SETUP_SKIP=skip,
+                     KEY_FILE_SIGN="multidomain.signkeys", KEY_FILE_SSH=ssh)
+            for k in ("KEY_FILE_SIGN", "KEY_FILE_SSH"):
+                if not os.path.isfile(os.path.join("buildkeys", z[k])):
+                    fehler(f"buildkeys/{z[k]} gibt es nicht")
+            zeilen.append([z[k] for k in sas.SPALTEN])
+        with open(os.path.join(raus, sites), "w", encoding="utf-8") as f:
+            f.write("# Erzeugt von scripts/multidomain-aus-stammdaten.py, nicht von Hand aendern.\n"
+                    f"# Stammdaten {commit}. Schluessel site-weit: buildkeys/multidomain.* (adorfer 17.11.2026).\n"
+                    "# Nur RELBRANCH, GLUONBRANCH, TEMPLATE_NAME, SITE_CODE, SETUP_SKIP und\n"
+                    "# KEY_FILE_* wirken; die Domain-Werte stehen in templates/multidomain/.\n"
+                    + sas.tabelle(zeilen, ["#" + sas.SPALTEN[0]] + sas.SPALTEN[1:]))
 
     print(f"{len(domaenen)} Domaenen, default_domain {default}")
     print("Site-weit trotz verschiedener Werte (nur in der Site erlaubt): "
@@ -465,12 +469,23 @@ def main():
     if schreiben:
         if os.path.exists(ZIEL):
             shutil.rmtree(ZIEL)
-        shutil.move(os.path.join(raus, SITES), SITES)
+        for sites in SITES.values():
+            shutil.move(os.path.join(raus, sites), sites)
         shutil.move(raus, ZIEL)
-        print(f"{ZIEL}/ und {SITES}: geschrieben")
+        print(f"{ZIEL}/ und {', '.join(SITES.values())}: geschrieben")
         return 0
-    r = subprocess.run(["diff", "-r", "--no-dereference", ZIEL, raus], capture_output=True, text=True)
-    r2 = subprocess.run(["diff", SITES, os.path.join(raus, SITES)], capture_output=True, text=True)
+    sites_neu = [os.path.join(raus, s) for s in SITES.values()]
+    r = subprocess.run(["diff", "-r", "--no-dereference"]
+                       + [f"--exclude={s}" for s in SITES.values()] + [ZIEL, raus],
+                       capture_output=True, text=True)
+    r2 = subprocess.CompletedProcess([], 0, "", "")
+    for alt, neu in zip(SITES.values(), sites_neu):
+        if not os.path.isfile(alt):
+            r2 = subprocess.CompletedProcess([], 1, f"{alt} fehlt noch\n", "")
+            continue
+        d = subprocess.run(["diff", alt, neu], capture_output=True, text=True)
+        if d.returncode != 0:
+            r2 = subprocess.CompletedProcess([], 1, r2.stdout + d.stdout, r2.stderr + d.stderr)
     if r.returncode == 0 and r2.returncode == 0:
         print(f"{ZIEL}/: gleich")
         shutil.rmtree(raus)
