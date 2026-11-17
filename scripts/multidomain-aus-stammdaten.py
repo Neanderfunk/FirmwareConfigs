@@ -437,21 +437,21 @@ def main():
     lua_laden(probe, arbeit)
     shutil.rmtree(arbeit)
 
-    # sites.nefall.multi: eine Zeile ohne, eine mit SSH-Schluessel (Monheim)
+    # sites.nefall.multi: eine Zeile ohne, eine mit SSH-Schluessel (buildkeys/multidomain.sshkeys)
     zeilen = []
     for variante, code, skip, ssh in (("ohne", "ffnef-multi", "false", "ffnef.nokeys"),
-                                      ("key", "ffnef-multi-key", "true", "ffmon.sshkeys")):
+                                      ("key", "ffnef-multi-key", "true", "multidomain.sshkeys")):
         z = dict(dt)
         z.update(RELBRANCH="stable", GLUONBRANCH=konf["GLUONBRANCH"][0],
                  TEMPLATE_NAME="multidomain", SITE_CODE=code, SETUP_SKIP=skip,
-                 KEY_FILE_SIGN="ffnef.signkeys", KEY_FILE_SSH=ssh)
+                 KEY_FILE_SIGN="multidomain.signkeys", KEY_FILE_SSH=ssh)
         for k in ("KEY_FILE_SIGN", "KEY_FILE_SSH"):
             if not os.path.isfile(os.path.join("buildkeys", z[k])):
                 fehler(f"buildkeys/{z[k]} gibt es nicht")
         zeilen.append([z[k] for k in sas.SPALTEN])
     with open(os.path.join(raus, SITES), "w", encoding="utf-8") as f:
         f.write("# Erzeugt von scripts/multidomain-aus-stammdaten.py, nicht von Hand aendern.\n"
-                f"# Stammdaten {commit}. Schluessel site-weit wie Monheim (adorfer 14.11.2026).\n"
+                f"# Stammdaten {commit}. Schluessel site-weit: buildkeys/multidomain.* (adorfer 17.11.2026).\n"
                 "# Nur RELBRANCH, GLUONBRANCH, TEMPLATE_NAME, SITE_CODE, SETUP_SKIP und\n"
                 "# KEY_FILE_* wirken; die Domain-Werte stehen in templates/multidomain/.\n"
                 + sas.tabelle(zeilen, ["#" + sas.SPALTEN[0]] + sas.SPALTEN[1:]))
