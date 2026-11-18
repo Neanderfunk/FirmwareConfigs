@@ -132,6 +132,7 @@ NUR_DOMAIN = [
     # nodeplacer.mirrors seit Feed b32a1b4 nur in der Domain (D-044): jede
     # Domain traegt ihre ganze Liste, mit eigener ULA (adorfer 18.11.2026)
     ("nodeplacer", "mirrors"),
+    ("neanderfunk_map",),
 ]
 # ... und diese nur in der site.conf ("*" = beliebiger Schluessel).
 NUR_SITE = [
@@ -389,6 +390,12 @@ def main():
         if dd.get("next_node", {}).get("ip4") != d["ip4"] or dd.get("prefix4") != d["prefix4"]:
             fehler(f"{c}: next_node.ip4/prefix4 aus der Vorlage passen nicht zum Export")
         dd["neanderfunk_hostname_prefix"] = d["hostname_prefix"]
+        # Kartenmitte je Domain fuer den Config-Mode (gluon-patches-packages
+        # config-mode/geo-location-domain-map, adorfer 18.11.2026); Werte wie
+        # in der Single-Linie aus MAP_LAT/MAP_LON/MAP_ZOOM
+        t = d["tsv"]
+        dd["neanderfunk_map"] = {"center": {"lat": float(t["MAP_LAT"]), "lon": float(t["MAP_LON"])},
+                                 "zoom": int(t["MAP_ZOOM"])}
         legacy = {k: v for k, v in (("mesh_id", d["mesh_sid_alt"]),
                                      ("next_node_ip4", d["next_node4_alt"]),
                                      ("next_node_ip4_fest", d.get("next_node4_fest", [])))
@@ -406,7 +413,7 @@ def main():
     # Probe nach Gluons Regel
     eigene = [("domain_names",), ("hide_domain",), ("domain_seed",), ("site_code",),
               ("default_domain",), ("neanderfunk_hostname_prefix",),
-              ("neanderfunk_legacy",), ("ddhcpd",)] + abweichend
+              ("neanderfunk_legacy",), ("ddhcpd",), ("neanderfunk_map",)] + abweichend
     for c in domaenen:
         zusammen = zusammenfuehren(json.loads(json.dumps(site)), dom[c])
         if ohne(zusammen, eigene) != ohne(einzeln[c], eigene):
