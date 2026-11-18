@@ -1,0 +1,27 @@
+Gluon schreibt openwrt/.config bei jedem "make" neu, auch mit gleichem
+Inhalt. Der Kernel-Konfigurationsschritt haengt an der mtime dieser Datei
+(include/kernel-build.mk). Dadurch wird beim zweiten Site-Bau desselben
+Targets (key nach nokey) der Kernel neu gelinkt, alle kmods werden neu
+gepackt, und hostapd wird neu uebersetzt. Bei gleichem Inhalt bekommt
+.config jetzt die alte mtime zurueck.
+
+--- a/Makefile
++++ b/Makefile
+@@ -197,8 +197,17 @@
+ 	)
+ 
+ 	$(OPENWRTMAKE) prepare-tmpinfo
++	rm -f openwrt/.config.gluon-prev
++	[ ! -f openwrt/.config ] || cp -p openwrt/.config openwrt/.config.gluon-prev
+ 	$(GLUON_ENV) $(LUA) scripts/target_config.lua > openwrt/.config
+ 	$(OPENWRTMAKE) defconfig
++	# Unchanged content keeps its old mtime: the kernel configure stamp depends
++	# on the mtime of openwrt/.config (include/kernel-build.mk), so a rewrite
++	# with identical content relinks the kernel and repackages every kmod.
++	if [ -f openwrt/.config.gluon-prev ] && cmp -s openwrt/.config openwrt/.config.gluon-prev; then
++		touch -r openwrt/.config.gluon-prev openwrt/.config
++	fi
++	rm -f openwrt/.config.gluon-prev
+ 	$(GLUON_ENV) $(LUA) scripts/target_config_check.lua
+ 
+ 
