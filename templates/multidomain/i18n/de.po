@@ -70,3 +70,9 @@ msgid "gluon-config-mode:geo-location-help"
 msgstr ""
 "Mit Koordinaten erscheint dein Knoten auf der "
 "<a href=\"https://karte.neanderfunk.de/#!v:g\" target=\"_blank\">Karte</a>."
+
+msgid "gluon-config-mode:domain-select"
+msgstr "Wähle die Domain, zu der dein Knoten gehört. Meist ist das der Ort, an dem er steht."
+
+msgid "gluon-config-mode:domain"
+msgstr "Domain"

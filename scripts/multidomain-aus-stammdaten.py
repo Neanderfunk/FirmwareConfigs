@@ -62,8 +62,38 @@ ZIEL = "templates/multidomain"
 # Autoupdater-Zweig kommen aus RELBRANCH, sonst sind beide gleich
 SITES = {"stable": "sites.nefall.multi", "broken": "sites.nefall.multi.bro"}
 # Dateien der Vorlage, die unveraendert gelten (Symlink nach common)
-GLEICH = ["image-customization.lua", "modules", "patchrepos", "prepare.sh",
-          "usb-geraete.lua"]
+GLEICH = ["modules", "patchrepos", "prepare.sh", "usb-geraete.lua"]
+# image-customization.lua: im Multi-Domain-Image die von common plus die
+# Domain-Auswahl im Config-Mode. Das Gluon-Paket haengt an
+# @GLUON_MULTIDOMAIN, darf also nicht in common (Single-Domain-Vorlagen).
+# common kommt als Symlink unter anderem Namen dazu und wird per include()
+# geladen (Pfad relativ zum Site-Verzeichnis, wie usb-geraete.lua).
+IMAGE_CUSTOMIZATION = """-- Erzeugt von scripts/multidomain-aus-stammdaten.py, nicht von Hand aendern.
+-- Multi-Domain-Image: Domain-Auswahl im Config-Mode (adorfer 18.11.2026),
+-- alles andere aus templates/common/image-customization.lua.
+
+features {
+    'config-mode-domain-select',
+}
+
+include('image-customization-common.lua')
+"""
+# Texte nur fuer das Multi-Domain-Image (Domain-Auswahl im Config-Mode).
+# ENTWURF (18.11.2026), Wortlaut gehoert Content.
+I18N_NUR_MULTI = {
+    "de.po": [("gluon-config-mode:domain-select",
+               "Wähle die Domain, zu der dein Knoten gehört. Meist ist das der Ort, "
+               "an dem er steht."),
+              ("gluon-config-mode:domain", "Domain")],
+    "en.po": [("gluon-config-mode:domain-select",
+               "Choose the domain your node belongs to. Usually this is the place "
+               "where it is located."),
+              ("gluon-config-mode:domain", "Domain")],
+    "fr.po": [("gluon-config-mode:domain-select",
+               "Choisissez le domaine de votre nœud. En général, c'est le lieu "
+               "où il se trouve."),
+              ("gluon-config-mode:domain", "Domaine")],
+}
 
 # Platzhalter wie im ParallelBuildsystem (generate_site_config), in dieser
 # Reihenfolge; True = "_" wird zu Leerzeichen.
@@ -419,10 +449,18 @@ def main():
         rest = [t for t, _, _ in PLATZHALTER if t in text]
         if rest:
             fehler(f"i18n/{name}: Platzhalter ohne Wert: {rest}")
+        for msgid, msgstr in I18N_NUR_MULTI.get(name, []):
+            if f'msgid "{msgid}"' in text:
+                fehler(f"i18n/{name}: {msgid} steht schon in {VORLAGE}/i18n")
+            text = text.rstrip("\n") + f'\n\nmsgid "{msgid}"\nmsgstr "{msgstr}"\n'
         with open(os.path.join(raus, "i18n", name), "w", encoding="utf-8") as f:
             f.write(text)
     for name in GLEICH:
         os.symlink(os.path.join("..", "common", name), os.path.join(raus, name))
+    with open(os.path.join(raus, "image-customization.lua"), "w", encoding="utf-8") as f:
+        f.write(IMAGE_CUSTOMIZATION)
+    os.symlink(os.path.join("..", "common", "image-customization.lua"),
+               os.path.join(raus, "image-customization-common.lua"))
     # Platzhalter, die im erzeugten Baum noch stehen duerfen (setzt der Bau)
     erlaubt = {"SBRANCH", "RELBRANCH", "GLUONBRANCH"} | set(ROH)
     for wurzel, _, dateien in os.walk(raus):
