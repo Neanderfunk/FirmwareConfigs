@@ -129,6 +129,9 @@ NUR_DOMAIN = [
     ("wifi24", "ap", "ssid"), ("wifi24", "ap", "owe_ssid"), ("wifi24", "mesh", "id"),
     ("wifi5", "ap", "ssid"), ("wifi5", "ap", "owe_ssid"), ("wifi5", "mesh", "id"),
     ("ddhcpd",), ("neanderfunk_hostname_prefix",), ("neanderfunk_legacy",),
+    # nodeplacer.mirrors seit Feed b32a1b4 nur in der Domain (D-044): jede
+    # Domain traegt ihre ganze Liste, mit eigener ULA (adorfer 18.11.2026)
+    ("nodeplacer", "mirrors"),
 ]
 # ... und diese nur in der site.conf ("*" = beliebiger Schluessel).
 NUR_SITE = [
@@ -141,7 +144,9 @@ NUR_SITE = [
     ("config_mode", "remote_login"), ("interfaces", "*", "default_roles"),
     ("mesh_vpn", "enabled"), ("mesh_vpn", "bandwidth_limit"),
     ("mesh_vpn", "fastd", "configurable"), ("mesh_vpn", "fastd", "syslog_level"),
-    ("nodeplacer",), ("roles",), ("setup_mode",), ("wifi_blackout",),
+    ("nodeplacer", "good_signatures"), ("nodeplacer", "pubkeys"),
+    ("nodeplacer", "disable"), ("nodeplacer", "config_mode"),
+    ("roles",), ("setup_mode",), ("wifi_blackout",),
 ]
 
 # Site-weite Werte, wo die Domaenen verschieden sind und Gluon nur die Site
