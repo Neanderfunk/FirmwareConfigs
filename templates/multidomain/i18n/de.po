@@ -76,3 +76,6 @@ msgstr "Wähle die Domain, zu der dein Knoten gehört. Meist ist das der Ort, an
 
 msgid "gluon-config-mode:domain"
 msgstr "Domain"
+
+msgid "gluon-config-mode:domain-hint:25_hvb"
+msgstr "Bitte den Knoten nicht im Halteverbot betreiben. Eventuell gibt es hier kein Internet. Wer trotzdem hier parkt, wird kostenfrei „abgeschleppt“: Knoten im Halteverbot können anhand der WLANs in der Umgebung geortet und in eine andere Domain verschoben werden."

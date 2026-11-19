@@ -65,3 +65,6 @@ msgstr "Choisissez le domaine de votre nœud. En général, c'est le lieu où il
 
 msgid "gluon-config-mode:domain"
 msgstr "Domaine"
+
+msgid "gluon-config-mode:domain-hint:25_hvb"
+msgstr "Merci de ne pas utiliser votre nœud dans la zone de stationnement interdit. Il n'y a peut-être pas d'internet ici. Les nœuds garés ici quand même sont « remorqués » gratuitement : ils peuvent être localisés grâce aux réseaux Wi-Fi alentour et déplacés vers un autre domaine."

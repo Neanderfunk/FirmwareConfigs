@@ -72,3 +72,6 @@ msgstr "Choose the domain your node belongs to. Usually this is the place where 
 
 msgid "gluon-config-mode:domain"
 msgstr "Domain"
+
+msgid "gluon-config-mode:domain-hint:25_hvb"
+msgstr "Please do not run your node in the no-parking zone. There may be no internet here. Nodes parked here anyway get \"towed away\" free of charge: they can be located by the Wi-Fi networks around them and moved to another domain."

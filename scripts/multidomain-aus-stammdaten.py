@@ -84,15 +84,33 @@ I18N_NUR_MULTI = {
     "de.po": [("gluon-config-mode:domain-select",
                "Wähle die Domain, zu der dein Knoten gehört. Meist ist das der Ort, "
                "an dem er steht."),
-              ("gluon-config-mode:domain", "Domain")],
+              ("gluon-config-mode:domain", "Domain"),
+              # Hinweis unter der Domain-Auswahl, nur solange die Domain
+              # gewaehlt ist (gluon-patches-packages domain-select-hint)
+              ("gluon-config-mode:domain-hint:25_hvb",
+               "Bitte den Knoten nicht im Halteverbot betreiben. Eventuell gibt es "
+               "hier kein Internet. Wer trotzdem hier parkt, wird kostenfrei "
+               "„abgeschleppt“: Knoten im Halteverbot können anhand der WLANs in "
+               "der Umgebung geortet und in eine andere Domain verschoben werden.")],
     "en.po": [("gluon-config-mode:domain-select",
                "Choose the domain your node belongs to. Usually this is the place "
                "where it is located."),
-              ("gluon-config-mode:domain", "Domain")],
+              ("gluon-config-mode:domain", "Domain"),
+              ("gluon-config-mode:domain-hint:25_hvb",
+               "Please do not run your node in the no-parking zone. There may be "
+               "no internet here. Nodes parked here anyway get \"towed away\" free "
+               "of charge: they can be located by the Wi-Fi networks around them "
+               "and moved to another domain.")],
     "fr.po": [("gluon-config-mode:domain-select",
                "Choisissez le domaine de votre nœud. En général, c'est le lieu "
                "où il se trouve."),
-              ("gluon-config-mode:domain", "Domaine")],
+              ("gluon-config-mode:domain", "Domaine"),
+              ("gluon-config-mode:domain-hint:25_hvb",
+               "Merci de ne pas utiliser votre nœud dans la zone de stationnement "
+               "interdit. Il n'y a peut-être pas d'internet ici. Les nœuds garés "
+               "ici quand même sont « remorqués » gratuitement : ils peuvent être "
+               "localisés grâce aux réseaux Wi-Fi alentour et déplacés vers un "
+               "autre domaine.")],
 }
 
 # Platzhalter wie im ParallelBuildsystem (generate_site_config), in dieser
@@ -464,6 +482,7 @@ def main():
         for msgid, msgstr in I18N_NUR_MULTI.get(name, []):
             if f'msgid "{msgid}"' in text:
                 fehler(f"i18n/{name}: {msgid} steht schon in {VORLAGE}/i18n")
+            msgstr = msgstr.replace("\\", "\\\\").replace('"', '\\"')
             text = text.rstrip("\n") + f'\n\nmsgid "{msgid}"\nmsgstr "{msgstr}"\n'
         with open(os.path.join(raus, "i18n", name), "w", encoding="utf-8") as f:
             f.write(text)
