@@ -5,23 +5,34 @@ Targets (key nach nokey) der Kernel neu gelinkt, alle kmods werden neu
 gepackt, und hostapd wird neu uebersetzt. Bei gleichem Inhalt bekommt
 .config jetzt die alte mtime zurueck.
 
+Verglichen wird ohne CONFIG_GLUON_SITEDIR und CONFIG_GLUON_SITE_VERSION:
+Gluon schreibt den Site-Pfad in .config (targets/generic), und der ist je
+Site verschieden (ffnef-multi, ffnef-multi-key). Mit einem Vergleich ueber
+alles griff der Patch deshalb nie (26111822bro). Beide Werte liest nur
+gluon-site, und das baut ueber PKG_CONFIG_DEPENDS per Hash neu, nicht ueber
+die mtime.
+
 --- a/Makefile
 +++ b/Makefile
-@@ -197,8 +197,17 @@
+@@ -197,8 +197,21 @@
  	)
  
  	$(OPENWRTMAKE) prepare-tmpinfo
-+	rm -f openwrt/.config.gluon-prev
++	rm -f openwrt/.config.gluon-prev openwrt/.config.gluon-cmp
 +	[ ! -f openwrt/.config ] || cp -p openwrt/.config openwrt/.config.gluon-prev
  	$(GLUON_ENV) $(LUA) scripts/target_config.lua > openwrt/.config
  	$(OPENWRTMAKE) defconfig
 +	# Unchanged content keeps its old mtime: the kernel configure stamp depends
 +	# on the mtime of openwrt/.config (include/kernel-build.mk), so a rewrite
 +	# with identical content relinks the kernel and repackages every kmod.
-+	if [ -f openwrt/.config.gluon-prev ] && cmp -s openwrt/.config openwrt/.config.gluon-prev; then
++	# The site path and site version differ between sites of the same target;
++	# only gluon-site uses them, and it tracks them via PKG_CONFIG_DEPENDS.
++	if [ -f openwrt/.config.gluon-prev ] &&
++		grep -Ev '^CONFIG_GLUON_SITE(DIR|_VERSION)=' openwrt/.config.gluon-prev > openwrt/.config.gluon-cmp &&
++		grep -Ev '^CONFIG_GLUON_SITE(DIR|_VERSION)=' openwrt/.config | cmp -s - openwrt/.config.gluon-cmp; then
 +		touch -r openwrt/.config.gluon-prev openwrt/.config
 +	fi
-+	rm -f openwrt/.config.gluon-prev
++	rm -f openwrt/.config.gluon-prev openwrt/.config.gluon-cmp
  	$(GLUON_ENV) $(LUA) scripts/target_config_check.lua
  
  

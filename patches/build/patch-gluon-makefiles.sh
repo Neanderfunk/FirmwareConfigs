@@ -20,7 +20,7 @@ apply_patch "$PATCH_DIR/gluon-makefile.patch" \
 echo "- Makefile: .config-mtime"
 apply_patch "$PATCH_DIR/gluon-makefile-config-mtime.patch" \
   "Makefile" \
-  'config.gluon-prev'
+  'config.gluon-cmp'
 
 # Der Paketpatch fuer packages/gluon steht nicht mehr hier, sondern in
 # add-gluon-package-patches.sh: "make update" spielt ihn ein, er muss also
