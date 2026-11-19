@@ -12,7 +12,7 @@ GLUON_SITE_FEEDS="neanderfunk community"
 
 PACKAGES_NEANDERFUNK_REPO=https://github.com/Neanderfunk/packages.git
 PACKAGES_NEANDERFUNK_BRANCH=v2025.1.x-next
-PACKAGES_NEANDERFUNK_COMMIT=fffe92e08c03628da06e2ee7f98bcfb8b5713fff
+PACKAGES_NEANDERFUNK_COMMIT=fb0ef0b89d7c863ebd623c88ce9ad4c39e998a53
 
 PACKAGES_COMMUNITY_REPO=https://github.com/freifunk-gluon/community-packages.git
 PACKAGES_COMMUNITY_BRANCH=main
