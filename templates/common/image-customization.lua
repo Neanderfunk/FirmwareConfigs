@@ -77,7 +77,7 @@ packages {
     'neanderfunk-domain-from-legacy',     -- neanderfunk (nur Multi-Domain: alte Domain beim ersten Upgrade von Single-Domain erkennen; ohne /lib/gluon/domains wirkungslos)
     'neanderfunk-port-roles',             -- neanderfunk (Config-Mode-Seite "Ports": Rolle je Port; greift nur auf Wunsch, sonst Gluons Aufbau)
     'neanderfunk-ddhcpd',                 -- neanderfunk (verteilter DHCP-Server; laeuft nur, wenn die Domain ddhcpd.enabled setzt; nie zusammen mit ffgraz-ddhcpd)
-    'neanderfunk-hvblocator',             -- neanderfunk (Ortung in 25_hvb; tut nur etwas, wenn die Domain neanderfunk_hvblocator.urls setzt; adorfer 20.11.2026)
+    'neanderfunk-domainhelper',           -- neanderfunk (Domain-Hilfen, z. B. Ortung in 25_hvb; tut nur etwas, wenn die Domain neanderfunk_domainhelper setzt; adorfer 20.11.2026)
     'ffac-autoupdater-wifi-fallback',     -- community
     'ffbs-collect-debug-info',            -- community
     'ffbs-debugbathosts',                 -- community
