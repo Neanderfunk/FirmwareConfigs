@@ -151,6 +151,7 @@ NUR_DOMAIN = [
     # Domain traegt ihre ganze Liste, mit eigener ULA (adorfer 18.11.2026)
     ("nodeplacer", "mirrors"),
     ("neanderfunk_map",),
+    ("neanderfunk_hvblocator",),
 ]
 # ... und diese nur in der site.conf ("*" = beliebiger Schluessel).
 NUR_SITE = [
@@ -170,6 +171,20 @@ NUR_SITE = [
 
 # Site-weite Werte, wo die Domaenen verschieden sind und Gluon nur die Site
 # erlaubt. ENTWURF (14.11.2026), Wortlaut fuer Nutzer gehoert Content.
+# Zusaetzliche Domain-Schluessel, die nur die Multi-Firmware kennt.
+# neanderfunk-hvblocator (Feed 098f43e): Ortung nur in der Halteverbot-Domain;
+# check_site laesst den Schluessel nur in der Domain zu (adorfer 20.11.2026).
+DOMAIN_ZUSATZ = {
+    "25_hvb": {
+        "neanderfunk_hvblocator": {
+            "urls": [
+                "https://locator.ffnef.de/hvb/locate",
+                "http://locator.ffnef.de/hvb/locate",
+            ],
+        },
+    },
+}
+
 SITE_WEIT = {
     ("site_name",): "Freifunk im Neanderland",
 }
@@ -428,10 +443,16 @@ def main():
             if "block_size" in dh:
                 dd["ddhcpd"]["block_size"] = dh["block_size"]
 
+    for c, zusatz in DOMAIN_ZUSATZ.items():
+        if c not in dom:
+            fehler(f"DOMAIN_ZUSATZ: Domain {c} fehlt in den Stammdaten")
+        dom[c].update(json.loads(json.dumps(zusatz)))
+
     # Probe nach Gluons Regel
     eigene = [("domain_names",), ("hide_domain",), ("domain_seed",), ("site_code",),
               ("default_domain",), ("neanderfunk_hostname_prefix",),
-              ("neanderfunk_legacy",), ("ddhcpd",), ("neanderfunk_map",)] + abweichend
+              ("neanderfunk_legacy",), ("ddhcpd",), ("neanderfunk_map",),
+              ("neanderfunk_hvblocator",)] + abweichend
     for c in domaenen:
         zusammen = zusammenfuehren(json.loads(json.dumps(site)), dom[c])
         if ohne(zusammen, eigene) != ohne(einzeln[c], eigene):
