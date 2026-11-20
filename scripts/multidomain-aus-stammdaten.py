@@ -164,7 +164,8 @@ NUR_SITE = [
     ("config_mode", "remote_login"), ("interfaces", "*", "default_roles"),
     ("mesh_vpn", "enabled"), ("mesh_vpn", "bandwidth_limit"),
     ("mesh_vpn", "fastd", "configurable"), ("mesh_vpn", "fastd", "syslog_level"),
-    ("nodeplacer", "good_signatures"), ("nodeplacer", "pubkeys"),
+    # nodeplacer.pubkeys/good_signatures seit Feed 42d3a5a (D-045) in Site
+    # oder Domain erlaubt, daher in keiner der beiden Listen
     ("nodeplacer", "disable"), ("nodeplacer", "config_mode"),
     ("roles",), ("setup_mode",), ("wifi_blackout",),
 ]
@@ -175,8 +176,17 @@ NUR_SITE = [
 # neanderfunk-domainhelper (Feed 26b0d0d, vormals neanderfunk-hvblocator):
 # Ortung (locator) nur in der Halteverbot-Domain; check_site laesst den
 # Schluessel nur in der Domain zu (adorfer 20.11.2026).
+# nodeplacer in 25_hvb (Konzept HVB-Ortung 4.5, Feed 42d3a5a/D-045): nur der
+# HVB-Schluessel des Mapservers, Manifest nur vom Mapserver; ersetzt den
+# ganzen nodeplacer-Block der Domain (auch die Mirrors). Die Schwelle aus
+# der Domain ist eine Obergrenze (adorfer 20.11.2026).
 DOMAIN_ZUSATZ = {
     "25_hvb": {
+        "nodeplacer": {
+            "mirrors": ["http://locator.ffnef.de/hvb/nodeplacer"],
+            "pubkeys": ["f7eb4b7d27de7c6ebe36978ef6df9f6865ce00df1cea046991e975bdbb33027d"],
+            "good_signatures": 1,
+        },
         "neanderfunk_domainhelper": {
             "locator": {
                 "urls": [
@@ -458,7 +468,9 @@ def main():
               ("neanderfunk_domainhelper",)] + abweichend
     for c in domaenen:
         zusammen = zusammenfuehren(json.loads(json.dumps(site)), dom[c])
-        if ohne(zusammen, eigene) != ohne(einzeln[c], eigene):
+        # DOMAIN_ZUSATZ weicht absichtlich von der Single-Fassung ab
+        eigene_c = eigene + [(k,) for k in DOMAIN_ZUSATZ.get(c, {})]
+        if ohne(zusammen, eigene_c) != ohne(einzeln[c], eigene_c):
             fehler(f"{c}: Site + Domain ergibt nicht die Single-Domain-Fassung")
     # keine Domain-Datei darf einen nur-Site-Pfad tragen und umgekehrt
     def pfade(d, p=()):
