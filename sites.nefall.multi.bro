@@ -1,5 +1,5 @@
 # Erzeugt von scripts/multidomain-aus-stammdaten.py, nicht von Hand aendern.
-# Stammdaten 3c138f92b5177791541f7998d7d5520e140f05ac. Schluessel site-weit: buildkeys/multidomain.* (adorfer 17.11.2026).
+# Stammdaten 707b5355d00666400570bcf13d876eebe92eba78. Schluessel site-weit: buildkeys/multidomain.* (adorfer 17.11.2026).
 # Nur RELBRANCH, GLUONBRANCH, TEMPLATE_NAME, SITE_CODE, SETUP_SKIP und
 # KEY_FILE_* wirken; die Domain-Werte stehen in templates/multidomain/.
 #RELBRANCH  GLUONBRANCH  TEMPLATE_NAME  SITE_CODE        DOMAIN_NR  SITE_SMALL  SITE_BIG  FF_PREFIX  META_PREFIX  MESH_SID  DOMAIN_NAME  SUPERNODE_DEFAULT  V4_PREFIX  V6_PREFIX            WIFICH_24  WIFICH_5  MAP_LAT    MAP_LON   MAP_ZOOM  DOMAIN_HASH                                                       META_NAME                META_WEBSITE        MAP_WEBSITE           FWWEBSITE_HOST  FWWEBSITE_TLD  OPKG_FQDN          SUPERNODE_TLD  DOMAIN_REGION_DE                               DOMAIN_REGION_EN                             SETUP_SKIP  KEY_FILE_SIGN         KEY_FILE_SSH         DOMAIN_LONGNAME
