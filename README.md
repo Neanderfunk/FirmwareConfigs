@@ -54,7 +54,7 @@ Quelle, etwa ein lokaler Spiegel, geht über `GLUON_REPO` (Umgebung oder
 ### Aufruf
 
 ```
-../ParallelBuildsystem/build.sh --detach build.conf targets.conf domains.conf [target ...] [--resume | --restart] [--force]
+../ParallelBuildsystem/build.sh --detach build.conf targets.conf domains-multi-bro.conf [target ...] [--resume | --restart] [--force]
 ```
 
 `--detach` startet den Lauf in einer tmux-Sitzung und verbindet sofort
@@ -66,8 +66,8 @@ Quelle, etwa ein lokaler Spiegel, geht über `GLUON_REPO` (Umgebung oder
 | `build.local.conf` | optional, hostspezifisch, nicht im Repo (etwa `WORKERS=6`) |
 | `*.local.conf` | eigene Auswahlen eines Hosts, etwa `domains-turnaround.local.conf`; von Git ignoriert, damit `build-info.txt` den Checkout als sauber meldet |
 | `targets.conf` | welche Hardware (`GLUON_TARGETS`, `-` davor schaltet aus) |
-| `domains.conf` | welche Domains: `SITES_FILE`, `DOMAINS_INCLUDE`/`EXCLUDE` |
-| `sites.*` | die Domains, je Zeile eine, erzeugt aus `templates/` |
+| `domains-multi-bro.conf` | welche Domains: `SITES_FILE`, `DOMAINS_INCLUDE`/`EXCLUDE`; Branch broken, `domains-multi.conf` für stable |
+| `sites.nefall.multi*` | die Bauzeilen (mit und ohne SSH-Schlüssel), Vorlage `templates/multidomain/` |
 
 Targets auf der Kommandozeile ersetzen die aus `targets.conf`. Ein
 abgebrochener Lauf wird mit `--resume` fortgesetzt oder mit `--restart`

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Multi-Domain-Vorlage templates/multidomain/ aus den Stammdaten erzeugen.
 
-Aufruf im Konfigurationsverzeichnis (dort, wo domains.conf liegt):
+Aufruf im Konfigurationsverzeichnis (dort, wo build.conf liegt):
 
   scripts/multidomain-aus-stammdaten.py              erzeugen und vergleichen
   scripts/multidomain-aus-stammdaten.py --schreiben  erzeugen und ueberschreiben

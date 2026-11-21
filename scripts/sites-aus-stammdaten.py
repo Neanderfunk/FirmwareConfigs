@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """sites.nefall.sta und sites.nefall.bro aus den Stammdaten erzeugen.
 
-Aufruf im Konfigurationsverzeichnis (dort, wo domains.conf liegt):
+Auf v2025.1.x-next gibt es keine Single-Domain-Vorlagen mehr (adorfer
+21.11.2026). Hier dient die Datei nur noch als Bibliothek fuer
+scripts/multidomain-aus-stammdaten.py; der Aufruf bricht ab. Die
+Single-Domain-Dateien pflegt der Branch v2025.1.x.
+
+Aufruf im Konfigurationsverzeichnis (dort, wo build.conf liegt):
 
   scripts/sites-aus-stammdaten.py              erzeugen und vergleichen
   scripts/sites-aus-stammdaten.py --schreiben  erzeugen und ueberschreiben
@@ -219,6 +224,9 @@ def vergleichen(alt_pfad, neu_pfad):
 
 
 def main():
+    if not os.path.isfile(DATEIEN["STA"][0]):
+        fehler("keine Single-Domain-Vorlagen auf diesem Branch: "
+               "scripts/multidomain-aus-stammdaten.py nehmen")
     args = sys.argv[1:]
     schreiben = "--schreiben" in args
     verzeichnis = None
