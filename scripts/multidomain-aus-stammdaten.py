@@ -455,6 +455,11 @@ def main():
                             "dns": dh["dns"]}
             if "block_size" in dh:
                 dd["ddhcpd"]["block_size"] = dh["block_size"]
+        # Upstream-DNS der Knoten (Gluon dns.servers) aus den Stammdaten,
+        # nicht aus der Vorlage (adorfer 22.11.2026: gehoert in die Stammdaten)
+        if not d.get("dns_servers6"):
+            fehler(f"{c}: dns_servers6 fehlt im Export, Stammdaten zu alt?")
+        dd.setdefault("dns", {})["servers"] = list(d["dns_servers6"])
 
     for c, zusatz in DOMAIN_ZUSATZ.items():
         if c not in dom:
@@ -465,7 +470,7 @@ def main():
     eigene = [("domain_names",), ("hide_domain",), ("domain_seed",), ("site_code",),
               ("default_domain",), ("neanderfunk_hostname_prefix",),
               ("neanderfunk_legacy",), ("ddhcpd",), ("neanderfunk_map",),
-              ("neanderfunk_domainhelper",)] + abweichend
+              ("neanderfunk_domainhelper",), ("dns", "servers")] + abweichend
     for c in domaenen:
         zusammen = zusammenfuehren(json.loads(json.dumps(site)), dom[c])
         # DOMAIN_ZUSATZ weicht absichtlich von der Single-Fassung ab
