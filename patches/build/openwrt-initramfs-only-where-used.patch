@@ -16,20 +16,48 @@ geleert; damit entfaellt das Initramfs-Image samt Kernel-Bau, so wie OpenWrt
 es fuer Geraete ohne KERNEL_INITRAMFS ohnehin vorsieht (Device/Build/initramfs).
 Die Erkennung schliesst eher zu viel ein als zu wenig.
 
+Geraete ohne Bedarf bekommen die Initramfs-Regeln gar nicht erst. Nur
+KERNEL_INITRAMFS zu leeren reichte nicht (26112316bro: 8 Paketsets, aber 33
+Kernel-Kopien): Die Bauregel fuer den Kernel ist eine Doppelpunkt-Regel je
+Paketset, und jedes Geraet legt seine eigene an. Braucht ein Geraet den
+Kernel, laufen die Regeln aller Geraete mit demselben Paketset. Deshalb steht
+die Regel jetzt nur noch einmal je Kernelname und Paketset; das Ergebnis
+haengt nur davon ab, nicht vom Geraet.
+
 Gluon kopiert Initramfs-Images ohnehin nicht in die Ausgabe, ausser sie sind
 als extra_images genannt; die stehen dann im Rezept und bleiben erhalten.
-NF_INITRAMFS_ALL=1 stellt das alte Verhalten wieder her.
+NF_INITRAMFS_ALL=1 baut den Initramfs-Kernel wieder fuer jedes Geraet (einer
+je Paketset bleibt).
 
 --- a/include/image.mk
 +++ b/include/image.mk
-@@ -856,7 +856,18 @@
+@@ -603,8 +603,15 @@
+ 
+   $(KDIR)/$$(KERNEL_INITRAMFS_NAME):: image_prepare
+   ifdef TARGET_PER_DEVICE_ROOTFS
++    # neanderfunk: one rule per kernel name and rootfs id. It is a
++    # double-colon rule, so every device with the same package set ran its
++    # own copy: the same kernel tree copied and compiled again per device.
++    # The result depends only on the rootfs id and the kernel name.
++    ifndef NF_INITRAMFS_RULE/$$(KERNEL_INITRAMFS_NAME).$$(ROOTFS_ID/$(1))
++    NF_INITRAMFS_RULE/$$(KERNEL_INITRAMFS_NAME).$$(ROOTFS_ID/$(1)) := $(1)
+     $(KDIR)/$$(KERNEL_INITRAMFS_NAME).$$(ROOTFS_ID/$(1)):: image_prepare target-dir-$$(ROOTFS_ID/$(1))
+ 	$(call Kernel/CompileImage/Initramfs,$(KDIR)/target-dir-$$(ROOTFS_ID/$(1)),.$$(ROOTFS_ID/$(1)))
++    endif
+   endif
+   $(1)-initramfs-images: $$(if $$(KERNEL_INITRAMFS),$(BIN_DIR)/$$(KERNEL_INITRAMFS_IMAGE))
+ 
+@@ -856,8 +863,21 @@
  
  endef
  
 +# neanderfunk: build the per-device initramfs kernel only where an image,
 +# artifact or compile step of the device uses it. Each one copies the whole
 +# kernel tree and compiles it again (mediatek-filogic: 30 trees per site).
-+# NF_INITRAMFS_ALL=1 restores the upstream behaviour.
++# Devices without it do not get the initramfs rules at all; otherwise their
++# double-colon compile rule would still run as soon as another device with
++# the same package set needs the kernel. NF_INITRAMFS_ALL=1 builds it for
++# every device again (one kernel per package set stays).
 +Device/UsesInitramfs = $(strip $(foreach v, \
 +	$(foreach i,$(IMAGES),IMAGE/$(i) $(foreach f,$(FILESYSTEMS),IMAGE/$(i)/$(f))) \
 +	$(foreach a,$(ARTIFACTS),ARTIFACT/$(a)) $(foreach c,$(COMPILE),COMPILE/$(c)) \
@@ -37,7 +65,8 @@ NF_INITRAMFS_ALL=1 stellt das alte Verhalten wieder her.
 +	$(findstring initramfs,$(value $(v)))$(findstring INITRAMFS,$(value $(v)))$(findstring with-initrd,$(value $(v)))))
 +
  define Device/Build
-+  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(if $$(filter 1,$$(NF_INITRAMFS_ALL))$$(Device/UsesInitramfs),,$$(eval KERNEL_INITRAMFS :=)))
-   $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(eval $$(call Device/Build/initramfs,$(1))))
+-  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(eval $$(call Device/Build/initramfs,$(1))))
++  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(if $$(filter 1,$$(NF_INITRAMFS_ALL))$$(Device/UsesInitramfs),$$(eval $$(call Device/Build/initramfs,$(1))),$$(eval $(1)-initramfs-images:)))
    $(call Device/Build/kernel,$(1))
  
+   $$(eval $$(foreach compile,$$(COMPILE), \
