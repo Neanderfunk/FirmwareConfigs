@@ -1,0 +1,30 @@
+Gluons clean_output.lua loescht vor jedem vollen Bau (ohne GLUON_DEVICES)
+openwrt/bin/targets/<board>/<subtarget>/packages. Beim zweiten Site-Bau
+desselben Targets (key nach nokey) muss OpenWrt deshalb alle kmods und die
+uebrigen nonshared-Pakete neu packen, obwohl sie unveraendert sind: in
+26112222bro je key-Bau 1036 kmod-Pakete fuer ath79-generic, 19 von 39
+Minuten (x86-64 16, ramips-mt7621 11 Minuten).
+
+Mit NF_KEEP_TARGET_PACKAGES=1 bleibt das Verzeichnis stehen. build.sh setzt
+die Variable nur fuer einen weiteren Site-Bau eines Targets, dessen erste
+Site in diesem Lauf schon gebaut ist. Der erste Bau eines Targets raeumt wie
+bisher auf, damit keine Pakete aus aelteren Laeufen in den Feed geraten.
+Am Inhalt aendert sich nichts: OpenWrt packt auch heute aus demselben
+Installationsverzeichnis, und Pakete mit geaenderter Konfiguration (etwa
+gluon-site ueber PKG_CONFIG_DEPENDS) baut es ohnehin neu.
+
+--- a/scripts/clean_output.lua
++++ b/scripts/clean_output.lua
+@@ -12,7 +12,10 @@
+ 
+ lib.exec({'rm', '-f', 'openwrt/bin/targets/'..bindir..'/\0'}, true, '2>/dev/null')
+ 
+--- Full builds will output the "packages" directory, so clean up first
+-if (env.GLUON_DEVICES or '') == '' then
++-- Full builds will output the "packages" directory, so clean up first.
++-- NF_KEEP_TARGET_PACKAGES=1: a further site of the same target in the same
++-- run; its packages are identical, deleting them only forces OpenWrt to
++-- repackage every kmod and other nonshared package.
++if (env.GLUON_DEVICES or '') == '' and (env.NF_KEEP_TARGET_PACKAGES or '') ~= '1' then
+ 	lib.exec {'rm', '-rf', 'openwrt/bin/targets/'..bindir..'/packages'}
+ end
