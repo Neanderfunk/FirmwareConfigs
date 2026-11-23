@@ -1,0 +1,43 @@
+OpenWrt baut bei CONFIG_TARGET_ROOTFS_INITRAMFS fuer jedes Geraet einen
+eigenen Initramfs-Kernel, auch wenn keines seiner Images ihn braucht. Gluon
+schaltet das fuer mediatek-filogic ein (targets/mediatek-filogic), weil einige
+Geraete ihn fuer recovery- oder factory-Images brauchen (M30/M60 recovery.bin,
+openwrt-one factory.ubi, Xiaomi initramfs-factory.ubi).
+
+Jeder dieser Kernel kostet eine Kopie des ganzen Kernel-Baums
+(linux-6.6.151 -> linux-6.6.151.<rootfs-id>, rund 2,8 GB) und einen weiteren
+Kernel-Bau. In 26112304bro waren das je Site 30 Baeume, rund 174 GB
+Schreiblast und gut 30 min im Bauschritt target/linux/install.
+
+Jetzt bekommt ein Geraet den Initramfs-Kernel nur noch, wenn eines seiner
+IMAGES, ARTIFACTS, COMPILE-Schritte, KERNEL oder UBINIZE_PARTS ihn nennt
+("initramfs", "INITRAMFS" oder "with-initrd"). Sonst wird KERNEL_INITRAMFS
+geleert; damit entfaellt das Initramfs-Image samt Kernel-Bau, so wie OpenWrt
+es fuer Geraete ohne KERNEL_INITRAMFS ohnehin vorsieht (Device/Build/initramfs).
+Die Erkennung schliesst eher zu viel ein als zu wenig.
+
+Gluon kopiert Initramfs-Images ohnehin nicht in die Ausgabe, ausser sie sind
+als extra_images genannt; die stehen dann im Rezept und bleiben erhalten.
+NF_INITRAMFS_ALL=1 stellt das alte Verhalten wieder her.
+
+--- a/include/image.mk
++++ b/include/image.mk
+@@ -856,7 +856,18 @@
+ 
+ endef
+ 
++# neanderfunk: build the per-device initramfs kernel only where an image,
++# artifact or compile step of the device uses it. Each one copies the whole
++# kernel tree and compiles it again (mediatek-filogic: 30 trees per site).
++# NF_INITRAMFS_ALL=1 restores the upstream behaviour.
++Device/UsesInitramfs = $(strip $(foreach v, \
++	$(foreach i,$(IMAGES),IMAGE/$(i) $(foreach f,$(FILESYSTEMS),IMAGE/$(i)/$(f))) \
++	$(foreach a,$(ARTIFACTS),ARTIFACT/$(a)) $(foreach c,$(COMPILE),COMPILE/$(c)) \
++	KERNEL UBINIZE_PARTS, \
++	$(findstring initramfs,$(value $(v)))$(findstring INITRAMFS,$(value $(v)))$(findstring with-initrd,$(value $(v)))))
++
+ define Device/Build
++  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(if $$(filter 1,$$(NF_INITRAMFS_ALL))$$(Device/UsesInitramfs),,$$(eval KERNEL_INITRAMFS :=)))
+   $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(eval $$(call Device/Build/initramfs,$(1))))
+   $(call Device/Build/kernel,$(1))
+ 
