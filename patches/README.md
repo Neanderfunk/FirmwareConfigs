@@ -31,7 +31,6 @@ Die Reihenfolge steht nur in `prepare.sh`.
 | Skript | Phase | Zweck |
 | --- | --- | --- |
 | `build/add-gluon-package-patches.sh` | pre-update | Paketpatch für packages/gluon: `/etc/opkg/keys` beim Autoupdater-Upgrade löschen |
-| `bugfixes/fix-respondd-rsk.sh` | post-update | respondd-Listener auf den Gluon-2016.x-Wert; Begründung im Skriptkopf |
 | `build/patch-gluon-makefiles.sh` | post-update | Gluon-Makefile: `GLUON_TARGETS` per override |
 
 ## Abhängigkeiten
