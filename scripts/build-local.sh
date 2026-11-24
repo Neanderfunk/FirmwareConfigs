@@ -39,7 +39,7 @@
 #   2. Site aus templates/<template> + Zeile in sites.nefall.sackgasse bauen
 #   3. git am patches/0001 (WR841 8M/16M, legt einen OpenWrt-Patch an)
 #   4. apply.sh pre-update je Patch-Repo, make update
-#   5. alte Patches aus patches/ (respondd-rsk, kernelswapon,
+#   5. alte Patches aus patches/ (kernelswapon,
 #      preservechannels), apply.sh post-update je Patch-Repo
 #   6. make je Target (BROKEN=1, V=s), make manifest
 #      Logs: build-<SBRANCH>-<template>-<target>.log; mit --alle laeuft es bei
@@ -181,7 +181,7 @@ for r in $PATCHREPOS; do "$ROOT/patch-repos/$r/apply.sh" pre-update; done
 make update "${ARGS[@]}"
 
 # 5. alte Patches aus patches/ (erwarten cwd = gluon, patches unter ../patches)
-for p in fix-respondd-rsk.sh kernelswapon.sh ignore-preservechannels-for-outdoormode.sh; do
+for p in kernelswapon.sh ignore-preservechannels-for-outdoormode.sh; do
   echo "== patches/$p"; ( "$ROOT/patches/$p" )
 done
 for r in $PATCHREPOS; do "$ROOT/patch-repos/$r/apply.sh" post-update; done
