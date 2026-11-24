@@ -183,7 +183,6 @@ fi
 for repo in $PATCHREPOS; do check_patchrepo "$repo"; done
 for repo in $PATCHREPOS; do apply_patchrepo "$repo"; done
 
-run_patch bugfixes/fix-respondd-rsk.sh          "respondd-Listener auf den Gluon-2016.x-Wert"
 # network/interface-role-migration21 entfaellt unter 2025.1: Gluon hat die
 # 2021-Migration selbst entfernt; ein 2021er Knoten geht ueber 2023.2.
 run_patch build/patch-gluon-makefiles.sh     "Gluon-Makefile und Paketliste"
