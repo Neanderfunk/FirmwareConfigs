@@ -7,14 +7,14 @@
 # ff02::2:1001 auf den Mesh-Schnittstellen und ff05::2:1001 auf den
 # Client-Schnittstellen vor.
 #
-# Warum: Der Patch ist fuer die aeltere unserer beiden Karten da, nicht fuer die
-# Knoten. Deren Abfrage-VM hat netzwerkseitig keine Schnittstelle in den
-# Client-Netzen der Domains und kann respondd-Anfragen deshalb nicht auf der
-# Schnittstelle senden, die Gluon seit 2021.x dafuer vorsieht. Die Adressen von
-# Gluon 2016.x sind die Umgehung dafuer.
+# Warum: Die Karte fragt respondd auf ff02::1. Auf Gluons ff05::2:1001
+# antworten in unserem Netz gemessen nur die Supernodes, nicht die Knoten.
+# Ueber batman ist ff02::1 kein Nachteil, weil das ganze Mesh eine
+# Broadcast-Domain ist. Erst mit den Adressen von Gluon 2016.x beantworten die
+# Knoten diese Abfrage.
 #
-# Damit ist er an diese eine Abfrage gebunden: Braucht die aeltere Karte sie
-# nicht mehr, ist zu pruefen, ob der Patch ersatzlos entfallen kann.
+# Der Patch ist damit Voraussetzung fuer die Karte: Ohne ihn zeigt sie nur die
+# Supernodes. Er darf nicht entfallen, solange die Karte so abfragt.
 #
 # Wird aus dem Gluon-Verzeichnis heraus aufgerufen, so wie prepare.sh es tut:
 #   pushd ../gluon ; ../patches/bugfixes/fix-respondd-rsk.sh ; popd
