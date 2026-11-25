@@ -16,7 +16,7 @@ sortiert.
 holen sich diese Version von selbst. Die Einstellungen bleiben erhalten.
 
 Diese Release Notes beschreiben, was sich seit `24112319sackgasse` geändert
-hat. Gluon, OpenWrt, Paketfeed und Patches sind unverändert.
+hat. Gluon, OpenWrt und Patches sind unverändert.
 
 Rückmeldungen bitte an:
 
@@ -29,8 +29,8 @@ Rückmeldungen bitte an:
 | | |
 |---|---|
 | Gluon | [`3181e496`](https://github.com/freifunk-gluon/gluon/commit/3181e496f4b79234beec1a90ed9fca206a6708c7) (Zweig v2021.1.x), wie 24112319sackgasse |
-| Site und Build | [FirmwareConfigs `bc98a58`](https://github.com/Neanderfunk/FirmwareConfigs/tree/bc98a58) |
-| Paketfeed | [Neanderfunk/packages `6e6fa53`](https://github.com/Neanderfunk/packages/tree/6e6fa53), wie 24112319sackgasse |
+| Site und Build | [FirmwareConfigs `cc07741`](https://github.com/Neanderfunk/FirmwareConfigs/tree/cc07741) |
+| Paketfeed | [Neanderfunk/packages `4735312`](https://github.com/Neanderfunk/packages/tree/4735312) |
 | Targets | `ar71xx-tiny`, `ar71xx-generic` |
 
 ## Adressplan der Supernodes
@@ -57,6 +57,14 @@ Rückmeldungen bitte an:
   2019.78 kein ed25519 kennt.
 - Das gilt erst für Router, die diese Version installiert haben. Für das
   Update selbst prüft ein Router die Schlüssel seiner bisherigen Firmware.
+
+## linkcheck 3
+
+- **Stumme Mesh-Nachbarn:** Ein neuer Check findet Nachbarn, deren Mesh-Link
+  besteht, über den aber kein Unicast mehr ankommt, und löscht deren Eintrag
+  einzeln. Das tritt auf, nachdem ein Nachbar neu gestartet ist.
+- **Anycast-Check auch über die ULA-Adresse** (`::ac1`). Fällt das
+  öffentliche IPv6-Prefix weg, startet der Router deshalb nicht mehr neu.
 
 ## respondd
 
