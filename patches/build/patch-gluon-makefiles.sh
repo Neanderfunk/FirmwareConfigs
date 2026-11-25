@@ -35,16 +35,18 @@ apply_patch "$PATCH_DIR/gluon-clean-output-keep-packages.patch" \
   "scripts/clean_output.lua" \
   'NF_KEEP_TARGET_PACKAGES'
 
-# Initramfs-Kernel nur fuer Geraete, deren Images ihn nennen (Begruendung im
-# Patch). Befund 23.11.2026, 26112304bro: mediatek-filogic baute je Site 30
-# Initramfs-Kernel, jeder mit eigener Kopie des Kernel-Baums (174 GB cp, gut
-# 30 min). Laeuft nach "make update", das den OpenWrt-Baum neu aufsetzt.
+# Initramfs-Kernel nur fuer Geraete, deren Images ihn nennen, und nur auf
+# mediatek-filogic (Begruendung im Patch). Befund 23.11.2026, 26112304bro:
+# mediatek-filogic baute je Site 30 Initramfs-Kernel, jeder mit eigener Kopie
+# des Kernel-Baums (174 GB cp, gut 30 min). 25.11.2026: MikroTik brauchen ihn
+# als factory-Image, deshalb die Beschraenkung. Laeuft nach "make update", das
+# den OpenWrt-Baum neu aufsetzt.
 echo "- openwrt/include/image.mk: Initramfs nur, wo ein Image ihn braucht"
 (
   enter_dir openwrt
   apply_patch "$PATCH_DIR/openwrt-initramfs-only-where-used.patch" \
     "include/image.mk" \
-    'Device/UsesInitramfs'
+    'Device/SkipInitramfs'
 )
 
 # Der Paketpatch fuer packages/gluon steht nicht mehr hier, sondern in

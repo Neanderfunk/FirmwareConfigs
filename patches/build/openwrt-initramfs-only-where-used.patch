@@ -24,14 +24,18 @@ Kernel, laufen die Regeln aller Geraete mit demselben Paketset. Deshalb steht
 die Regel jetzt nur noch einmal je Kernelname und Paketset; das Ergebnis
 haengt nur davon ab, nicht vom Geraet.
 
-Gluon kopiert Initramfs-Images ohnehin nicht in die Ausgabe, ausser sie sind
-als extra_images genannt; die stehen dann im Rezept und bleiben erhalten.
-NF_INITRAMFS_ALL=1 baut den Initramfs-Kernel wieder fuer jedes Geraet (einer
-je Paketset bleibt).
+Das Weglassen gilt nur fuer die Targets in NF_INITRAMFS_SPARSE (Vorgabe
+mediatek/filogic). Gluon kann den Initramfs-Kernel auch nehmen, ohne dass ein
+OpenWrt-Image ihn nennt: Bei den MikroTik-Targets ist er das factory-Image
+(targets/mikrotik.inc, factory = '-initramfs-kernel'). 25.11.2026 scheiterte
+ath79-mikrotik daran (wapr-2nd-initramfs-kernel.bin fehlte), seitdem bauen
+alle anderen Targets ihn wieder fuer jedes Geraet. Die Dedup-Regel oben gilt
+weiter ueberall. NF_INITRAMFS_ALL=1 baut ihn auch bei filogic wieder fuer
+jedes Geraet (einer je Paketset bleibt).
 
 --- a/include/image.mk
 +++ b/include/image.mk
-@@ -603,8 +603,15 @@
+@@ -603,8 +603,15 @@ define Device/Build/initramfs
  
    $(KDIR)/$$(KERNEL_INITRAMFS_NAME):: image_prepare
    ifdef TARGET_PER_DEVICE_ROOTFS
@@ -47,7 +51,7 @@ je Paketset bleibt).
    endif
    $(1)-initramfs-images: $$(if $$(KERNEL_INITRAMFS),$(BIN_DIR)/$$(KERNEL_INITRAMFS_IMAGE))
  
-@@ -856,8 +863,21 @@
+@@ -850,8 +857,29 @@ define Device/Build/artifact
  
  endef
  
@@ -64,9 +68,17 @@ je Paketset bleibt).
 +	KERNEL UBINIZE_PARTS, \
 +	$(findstring initramfs,$(value $(v)))$(findstring INITRAMFS,$(value $(v)))$(findstring with-initrd,$(value $(v)))))
 +
++# neanderfunk: skip it only on the targets listed here, where it pays off
++# (mediatek-filogic: 30 devices, few need it). Elsewhere Gluon may use the
++# initramfs kernel without any OpenWrt image naming it: its MikroTik targets
++# take it as factory image (targets/mikrotik.inc), so ath79-mikrotik and
++# ipq40xx-mikrotik need it for every device.
++NF_INITRAMFS_SPARSE ?= mediatek/filogic
++Device/SkipInitramfs = $(if $(filter 1,$(NF_INITRAMFS_ALL)),,$(if $(filter $(NF_INITRAMFS_SPARSE),$(BOARD)/$(SUBTARGET)),$(if $(Device/UsesInitramfs),,1)))
++
  define Device/Build
 -  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(eval $$(call Device/Build/initramfs,$(1))))
-+  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(if $$(filter 1,$$(NF_INITRAMFS_ALL))$$(Device/UsesInitramfs),$$(eval $$(call Device/Build/initramfs,$(1))),$$(eval $(1)-initramfs-images:)))
++  $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$$(if $$(Device/SkipInitramfs),$$(eval $(1)-initramfs-images:),$$(eval $$(call Device/Build/initramfs,$(1)))))
    $(call Device/Build/kernel,$(1))
  
    $$(eval $$(foreach compile,$$(COMPILE), \
