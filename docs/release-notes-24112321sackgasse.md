@@ -29,8 +29,8 @@ Rückmeldungen bitte an:
 | | |
 |---|---|
 | Gluon | [`3181e496`](https://github.com/freifunk-gluon/gluon/commit/3181e496f4b79234beec1a90ed9fca206a6708c7) (Zweig v2021.1.x), wie 24112319sackgasse |
-| Site und Build | [FirmwareConfigs `cc07741`](https://github.com/Neanderfunk/FirmwareConfigs/tree/cc07741) |
-| Paketfeed | [Neanderfunk/packages `4735312`](https://github.com/Neanderfunk/packages/tree/4735312) |
+| Site und Build | [FirmwareConfigs `d2ef1d1`](https://github.com/Neanderfunk/FirmwareConfigs/tree/d2ef1d1) |
+| Paketfeed | [Neanderfunk/packages `ef98e71`](https://github.com/Neanderfunk/packages/tree/ef98e71) |
 | Targets | `ar71xx-tiny`, `ar71xx-generic` |
 
 ## Adressplan der Supernodes
