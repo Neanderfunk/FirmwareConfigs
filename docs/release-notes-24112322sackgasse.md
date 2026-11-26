@@ -1,8 +1,8 @@
-# Release Notes 24112321sackgasse
+# Release Notes 24112322sackgasse
 
 **Neanderfunk-Firmware "Sackgasse" auf Basis von Gluon 2021.1**
 
-Version `24112321sackgasse`, gebaut für 30 Domains.
+Version `24112322sackgasse`, gebaut für 30 Domains.
 
 Die Sackgasse ist die Firmware für Router, die unsere aktuelle Firmware nicht
 mehr vertragen. Welche Geräte das sind, steht in den
@@ -29,7 +29,7 @@ Rückmeldungen bitte an:
 | | |
 |---|---|
 | Gluon | [`3181e496`](https://github.com/freifunk-gluon/gluon/commit/3181e496f4b79234beec1a90ed9fca206a6708c7) (Zweig v2021.1.x), wie 24112319sackgasse |
-| Site und Build | [FirmwareConfigs `d2ef1d1`](https://github.com/Neanderfunk/FirmwareConfigs/tree/d2ef1d1) |
+| Site und Build | [FirmwareConfigs `72c52ff`](https://github.com/Neanderfunk/FirmwareConfigs/tree/72c52ff) |
 | Paketfeed | [Neanderfunk/packages `ef98e71`](https://github.com/Neanderfunk/packages/tree/ef98e71) |
 | Targets | `ar71xx-tiny`, `ar71xx-generic` |
 
