@@ -456,7 +456,8 @@ end
 -- ueber factory.bin; steht in Gluons Release Notes 2025.1 neben dem ERX.
 -- Linksys E8450 UBI (1.0 -> 2.0).
 -- Grundlage: Vergleich DEVICE_COMPAT_VERSION aller Geraete zwischen dem
--- OpenWrt von Gluon v2023.2.6 und v2025.1.x 0ad3ad5 (27.09.2026).
+-- OpenWrt von Gluon v2023.2.6 und v2025.1.x 0ad3ad5 (27.09.2026); bis Gluon ac283dfb
+-- (OpenWrt 34fa4b1af5) keine Aenderung an DEVICE_COMPAT_VERSION (26.11.2026).
 if device({
     'xiaomi-redmi-router-ax6s',
     'linksys-e8450-ubi',

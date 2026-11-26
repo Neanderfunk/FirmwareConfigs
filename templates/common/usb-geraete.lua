@@ -1,9 +1,9 @@
 -- ERZEUGT von scripts/usb-geraete.py, nicht von Hand aendern.
--- Stand: gluon=0ad3ad5b09b3 openwrt=a1ea57bd050c hardware=11facc816a86
+-- Stand: gluon=ac283dfb5aa7 openwrt=34fa4b1af5a3 hardware=24b448e0027e
 -- Gluon-Geraete mit USB-Port: OpenWrt-Profil bringt einen USB-Host-Treiber
 -- mit UND der Device-Tree schaltet einen USB-Knoten ein.
 -- Eingebunden von image-customization.lua per include().
--- ohne Device-Tree im OpenWrt-Baum, nur nach Paketen: mediatek-filogic: gl.inet-gl-mt2500
+-- ohne Device-Tree im OpenWrt-Baum, nur nach Paketen: mediatek-filogic: bananapi-bpi-r3
 return device({
     -- ath79-generic
     'alfa-network-ap121f',
@@ -121,6 +121,21 @@ return device({
     'gl.inet-gl-mt3000',
     'gl.inet-gl-mt6000',
     'openwrt-one',
+    'acer-predator-connect-w6',
+    'acer-predator-connect-w6d',
+    'asus-tuf-ax4200q',
+    'bananapi-bpi-r3',
+    'bananapi-bpi-r3-mini',
+    'iptime-ax7800m-6e',
+    'tp-link-archer-ax80-v1',
+    'tp-link-tl-xdr4288',
+    'tp-link-tl-xdr6086',
+    'tp-link-tl-xdr6088',
+    'tp-link-tl-xtr8488',
+    'wavlink-wl-wn536ax6-a',
+    'zyxel-ex5601-t0',
+    'zyxel-ex5601-t0-openwrt-u-boot-layout',
+    'zyxel-ex5700-telenor',
     -- mediatek-mt7622
     'linksys-e8450-ubi',
     -- mpc85xx-p1010
@@ -130,6 +145,9 @@ return device({
     'aerohive-hiveap-330',
     'extreme-networks-ws-ap3825i',
     'ocedo-panda',
+    -- qualcommax-ipq60xx
+    'gl.inet-gl-ax1800',
+    'gl.inet-gl-axt1800',
     -- qualcommax-ipq807x
     'linksys-mx5300',
     -- ramips-mt7620
