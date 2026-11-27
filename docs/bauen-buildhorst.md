@@ -48,6 +48,19 @@ heißen die Key-Ordner wie in stable `<domain>.key` (Build: `<domain>-key`).
 Danach wie in `docs/ueberarbeitung-2026.md` bzw. router-werkstatt
 `werkzeug/firmwareserver/` (unterschreiben, zusammenführen mit stable).
 
+Hochladen auf den Firmware-Server mit `signup-alle` aus dem
+ParallelBuildsystem (ab 27.11.2026). Es nimmt den jüngsten Lauf mit
+`sackgasse.manifest`, unterschreibt je Site und schiebt ein 7z je Site
+(`<site>-<zeit>-<SBRANCH>.7z`) ins Home-Verzeichnis auf `firmware6.ffnef.de`:
+
+```sh
+[ "$(hostname -s)" = wir-horst ] && cd /home/build/sackgasse2021.x && ../ParallelBuildsystem/scripts/signup-alle --sackgasse
+```
+
+Einen bestimmten Lauf mit `--lauf <SBRANCH>`, einzelne Domains durch ihren
+Namen dahinter (`02_met` trifft auch `02_met-key`). Was schon oben liegt,
+wird übersprungen.
+
 ## Vor dem Ausrollen
 
 - DNS: `sinope.eol.ffnef.de`, `lysithea.eol.ffnef.de`, `carme.eol.ffnef.de`
