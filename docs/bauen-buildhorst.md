@@ -42,8 +42,20 @@ tmux new -s sackgasse "sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scri
 
 ## Ergebnis
 
-`images/<SBRANCH>/<site>/{sysupgrade,factory,other}`, je Site ein
-unsigniertes `sackgasse.manifest`. Beim Einspielen auf den Firmware-Server
+`images/<SBRANCH>/<site>/{sysupgrade,factory,other,site}`, je Site ein
+unsigniertes `sackgasse.manifest`. `site/` ist die zusammengebaute Site, mit
+der Gluon gebaut hat (seit 27.11.2026; vorher lag sie nur in `assembled/<site>/`,
+und das überschreibt jeder Bau). Für einen älteren Lauf nachtragen, mit dem
+Checkout auf dem Stand des Laufs:
+
+```sh
+[ "$(hostname -s)" = wir-horst ] && cd /home/build/sackgasse2021.x && sg docker -c 'SBRANCH=<lauf> RELBRANCH=sackgasse scripts/build-local.sh --nur-site --alle'
+```
+
+Das baut nur die Sites neu zusammen und fasst `gluon/` nicht an. Geprüft am
+27.11.2026 für 18_nefuk von 24112323sackgasse: Die nachgetragene `site.conf`
+gleicht der `site.json` im Image bis auf das leere `authorized_keys`, das
+Gluon weglässt. Beim Einspielen auf den Firmware-Server
 heißen die Key-Ordner wie in stable `<domain>.key` (Build: `<domain>-key`).
 Danach wie in `docs/ueberarbeitung-2026.md` bzw. router-werkstatt
 `werkzeug/firmwareserver/` (unterschreiben, zusammenführen mit stable).

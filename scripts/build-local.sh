@@ -7,6 +7,10 @@
 #   scripts/build-local.sh <template> [target ...]   (ohne Target: targets.conf)
 #   scripts/build-local.sh --alle [target ...]        alle aktiven Zeilen aus
 #                                                     sites.nefall.sackgasse
+#   scripts/build-local.sh --nur-site --alle|<template>
+#                  nur die site-Dateien eines fertigen Laufs nachtragen (SBRANCH
+#                  = dieser Lauf), ohne Gluon anzufassen; Checkout auf dem Stand
+#                  des Laufs. Seit 27.11.2026 macht das jeder Bau selbst.
 #
 # Feldbau (alle Domains): SBRANCH=26MMDDHHsg RELBRANCH=sackgasse \
 #           scripts/build-local.sh --alle
@@ -41,7 +45,8 @@
 #   4. apply.sh pre-update je Patch-Repo, make update
 #   5. alte Patches aus patches/ (kernelswapon,
 #      preservechannels), apply.sh post-update je Patch-Repo
-#   6. make je Target (BROKEN=1, V=s), make manifest
+#   6. make je Target (BROKEN=1, V=s), make manifest, site-Dateien nach
+#      images/<SBRANCH>/<template>/site/ (wie im 2025.1-Bau)
 #      Logs: build-<SBRANCH>-<template>-<target>.log; mit --alle laeuft es bei
 #      einem Fehler mit der naechsten Domain weiter, Zusammenfassung am Ende
 #      und in images/<SBRANCH>/build-summary.txt.
@@ -67,6 +72,11 @@ if [ "${IN_CONTAINER:-}" != 1 ]; then
     -v "$ROOT:$ROOT" -w "$ROOT" nf-gluon2021-build "$ROOT/scripts/build-local.sh" "$@"
 fi
 
+NURSITE=0
+if [ "$1" = --nur-site ]; then
+  NURSITE=1; shift
+  [ $# -ge 1 ] || { echo "--nur-site braucht --alle oder ein Template" >&2; exit 2; }
+fi
 if [ "$1" = --alle ]; then
   shift
   mapfile -t TEMPLATES < <(awk -F'\t+' '$1 !~ /^#/ && NF > 3 {gsub(/ /, "", $3); print $3}' "$ROOT/sites.nefall.sackgasse")
@@ -88,7 +98,10 @@ fi
 . "$ROOT/build.conf"
 echo "== Sackgasse lokal: ${#TEMPLATES[@]} Template(s) (${TEMPLATES[*]}), ${TARGETS[*]}, Release $SBRANCH, Branch $RELBRANCH"
 
-# 1. Gluon und Patch-Repos
+# 1. Gluon und Patch-Repos (nicht bei --nur-site, dort reicht Schritt 2)
+if [ "$NURSITE" = 1 ]; then
+  :
+else
 if [ ! -d "$ROOT/gluon/.git" ]; then
   git clone -q "$GLUON_REPO" "$ROOT/gluon"
 fi
@@ -104,6 +117,7 @@ for r in $PATCHREPOS; do
   git -C "$d" fetch -q origin
   git -C "$d" checkout -q -f "${!commit_var}"
 done
+fi
 
 # Nur ssh-rsa-Zeilen durchlassen (dropbear 2019.78 der Sackgasse kennt kein ed25519/ecdsa)
 nur_rsa() {
@@ -160,6 +174,34 @@ site_bauen() {
         GLUON_AUTOUPDATER_BRANCH="$RELBRANCH" GLUON_AUTOUPDATER_ENABLED=1 BROKEN=1)
 }
 
+# Die fertige Site neben die Images legen, wie es das ParallelBuildsystem im
+# 2025.1-Bau tut (Ausnahmen wie dort SITE_COPY_EXCLUDES). Ohne das gab es die
+# site.conf eines Laufs nur in assembled/, und das ueberschreibt jeder Bau.
+site_kopieren() {
+  local ZIEL="$IMAGEDIR/site"
+  rm -rf "$ZIEL"
+  cp -a "$SITEDIR" "$ZIEL"
+  find "$ZIEL" \( -name '*.old' -o -name '*.backup' -o -name '*~' -o -name '*.nonworking' \) -delete
+}
+
+if [ "$NURSITE" = 1 ]; then
+  FEHLER=()
+  for TEMPLATE in "${TEMPLATES[@]}"; do
+    if [ ! -f "$ROOT/images/$SBRANCH/$TEMPLATE/sysupgrade/$RELBRANCH.manifest" ]; then
+      echo "$TEMPLATE: kein images/$SBRANCH/$TEMPLATE/sysupgrade/$RELBRANCH.manifest, uebersprungen" >&2
+      FEHLER+=("$TEMPLATE"); continue
+    fi
+    site_bauen "$TEMPLATE" || { FEHLER+=("$TEMPLATE"); continue; }
+    site_kopieren
+    echo "$TEMPLATE: site/ nachgetragen"
+  done
+  if [ ${#FEHLER[@]} -gt 0 ]; then
+    echo "FEHLER: ${FEHLER[*]}" >&2; exit 1
+  fi
+  echo "== fertig: site/ in $ROOT/images/$SBRANCH (${#TEMPLATES[@]} Template(s))"
+  exit 0
+fi
+
 site_bauen "${TEMPLATES[0]}"
 
 cd "$ROOT/gluon"
@@ -212,6 +254,7 @@ for TEMPLATE in "${TEMPLATES[@]}"; do
   done
   [ "$ok" = 1 ] || continue
   make manifest "${ARGS[@]}"
+  site_kopieren
   n=$(ls "$IMAGEDIR/sysupgrade" 2>/dev/null | grep -c -- '-sysupgrade\.\(bin\|img\.gz\)$' || true)
   echo "$TEMPLATE ok, $n sysupgrade-Images" | tee -a "$SUMMARY"
 done
