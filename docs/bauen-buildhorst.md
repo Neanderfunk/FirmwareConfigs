@@ -61,7 +61,9 @@ Danach wie in `docs/ueberarbeitung-2026.md` bzw. router-werkstatt
 `werkzeug/firmwareserver/` (unterschreiben, zusammenführen mit stable).
 
 Hochladen auf den Firmware-Server mit `signup-alle` aus dem
-ParallelBuildsystem (ab 27.11.2026). Es nimmt den jüngsten Lauf mit
+ParallelBuildsystem (ab 27.11.2026). Hochladen geht als `adorfer` (SSH-Key für
+`firmware6`), die Checkouts pullt `build`; Pull und Upload deshalb getrennt
+aufrufen. Es nimmt den jüngsten Lauf mit
 `sackgasse.manifest`, unterschreibt je Site und schiebt ein 7z je Site
 (`<site>-<zeit>-<SBRANCH>.7z`) ins Home-Verzeichnis auf `firmware6.ffnef.de`:
 
