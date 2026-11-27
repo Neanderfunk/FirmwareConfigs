@@ -20,10 +20,23 @@ sg docker -c 'docker build -t nf-gluon2021-build scripts/docker'
 
 ## Bauen (alle aktiven Domains)
 
+Seit 27.11.2026 mit einem Aufruf aus dem ParallelBuildsystem, als `build`,
+im Vordergrund des eigenen Fensters (kein tmux mehr):
+
+```sh
+/home/build/ParallelBuildsystem/scripts/bau sackgasse
+```
+
+Es bricht ab, wenn schon ein Bau läuft (`build.lock`) oder versionierte
+Dateien lokal geändert sind, pullt, prüft gegen `git ls-remote`, setzt
+`SBRANCH=<JJMMTTHH>sg` (oder `SBRANCH=<name>` davor) und startet
+`sg docker -c '... scripts/build-local.sh --alle 2>&1 | tee build-alle.log'`.
+Abbrechen mit Strg-C in diesem Fenster. Von Hand geht es weiter so:
+
 ```sh
 cd /home/build/sackgasse2021.x
 git pull
-tmux new -s sackgasse "sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scripts/build-local.sh --alle 2>&1 | tee build-alle.log'"
+sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scripts/build-local.sh --alle 2>&1 | tee build-alle.log'
 ```
 
 - `SBRANCH` muss über `24111216sackgasse` sortieren (das Skript prüft das),
@@ -35,7 +48,8 @@ tmux new -s sackgasse "sg docker -c 'SBRANCH=26MMDDHHsg RELBRANCH=sackgasse scri
   der Aufruf mit "permission denied ... docker.sock", wenn die Shell per `su`
   kam oder ein aelterer tmux-Server die Sitzung startet; `sg` setzt die Gruppe
   fuer genau diesen Aufruf. Ebenso `sg docker -c 'docker build ...'`.
-- Abkoppeln mit Strg-B d, wieder hinein mit `tmux attach -t sackgasse`.
+- Ohne tmux (adorfer 27.11.2026): Mit Sackgasse und Multi gleichzeitig traf
+  `tmux kill-session` den falschen Lauf.
 - Ein Fehler in einer Domain hält den Lauf nicht an; Zusammenfassung in
   `images/<SBRANCH>/build-summary.txt`, Logs `build-<SBRANCH>-<site>-<target>.log`.
 - Einzelne Site nachbauen: `SBRANCH=… RELBRANCH=sackgasse scripts/build-local.sh 13_dusfl-key`.
